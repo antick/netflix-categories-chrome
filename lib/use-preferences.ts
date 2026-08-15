@@ -86,5 +86,6 @@ export function usePreferences() {
         experimentalHeaderMenuNoticeDismissed: true,
       })),
     resetAll: () => patch(resetPreferences),
+    replaceAll: (next: ExtensionPreferences) => patch(() => next),
   };
 }

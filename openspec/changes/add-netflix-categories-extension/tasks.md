@@ -59,3 +59,4 @@
 - [x] 7.4 Add All/Favorites/Recent/Hidden tabs to the popup and Light/Dark themes
 - [x] 7.5 Add Empty tab; move region-empty genre pages there from popup and mega menu
 - [x] 7.6 Replace Tab/New with icon+tooltip actions, expand on row click, and match header type to Netflix
+- [x] 7.7 Add Options export/import of the full local preference state

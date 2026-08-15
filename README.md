@@ -19,6 +19,7 @@ Netflix Categories is an unofficial open-source project and is not affiliated wi
 - Search thousands of bundled hidden category and genre codes
 - Open a category in this tab or a new tab from each row's icons
 - Favorites, Hidden, Recent, and Empty lists stored locally
+- Export and import those lists and other settings from Options
 - Optional experimental Hidden Categories menu in Netflix's header
 - No account, cookies, analytics, or remote category API
 
@@ -102,7 +103,7 @@ Details: [docs/CATEGORY_DATA.md](docs/CATEGORY_DATA.md).
 
 ## Privacy
 
-This extension does not collect or transmit personal data. Favorites, hidden categories, empty categories, recent category selections, and extension settings are stored locally in the browser.
+This extension does not collect or transmit personal data. Favorites, hidden categories, empty categories, recent category selections, and extension settings are stored locally in the browser. Export downloads that state as a JSON file; import reads a file you choose. Neither leaves your machine.
 
 Optional Netflix permission is requested only if you enable the experimental header menu. It is used to attach an extension-owned menu on `netflix.com`. The extension does not read cookies, credentials, viewing history, or account data.
 

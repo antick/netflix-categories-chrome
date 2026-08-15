@@ -11,7 +11,7 @@ Core permissions SHALL be limited to what implementation actually needs, expecte
 
 ### Requirement: The extension SHALL not collect or transmit personal data
 
-There SHALL be no backend, analytics, or telemetry. The extension MUST NOT collect personal data, Netflix credentials, account data, cookies, viewing history, or browser history. Only Favorites, Hidden, Recent, Empty, extension selections, and settings SHALL be stored locally.
+There SHALL be no backend, analytics, or telemetry. The extension MUST NOT collect personal data, Netflix credentials, account data, cookies, viewing history, or browser history. Only Favorites, Hidden, Recent, Empty, extension selections, and settings SHALL be stored locally. User-initiated export SHALL write that same local state to a JSON file on disk. Import SHALL read a local file chosen by the user. Neither action SHALL upload settings.
 
 #### Scenario: Privacy statement matches behavior
 

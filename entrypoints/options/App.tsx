@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "../../components/ThemeToggle";
 import {
   disableExperimentalHeader,
   enableExperimentalHeader,
 } from "../../lib/permissions";
+import {
+  parseSettingsImportText,
+  settingsExportFilename,
+  settingsExportToJson,
+} from "../../lib/settings-export";
 import { applyTheme } from "../../lib/theme";
 import { usePreferences } from "../../lib/use-preferences";
 
@@ -11,6 +16,7 @@ export function OptionsApp() {
   const prefsApi = usePreferences();
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (prefsApi.prefs) applyTheme(prefsApi.prefs.theme);
@@ -46,6 +52,52 @@ export function OptionsApp() {
     await prefsApi.setExperimentalEnabled(false);
     await disableExperimentalHeader();
     setStatus("Hidden Categories menu disabled.");
+  };
+
+  const exportSettings = () => {
+    const json = settingsExportToJson(prefs);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = settingsExportFilename();
+    link.click();
+    URL.revokeObjectURL(url);
+    setStatus("Settings downloaded.");
+  };
+
+  const importSettingsFile = async (file: File) => {
+    setBusy(true);
+    setStatus(null);
+    try {
+      const imported = parseSettingsImportText(await file.text());
+      let experimental = imported.experimentalHeaderMenuEnabled;
+      if (experimental) {
+        experimental = await enableExperimentalHeader();
+      } else {
+        await disableExperimentalHeader();
+      }
+      await prefsApi.replaceAll({
+        ...imported,
+        experimentalHeaderMenuEnabled: experimental,
+      });
+      applyTheme(imported.theme);
+      setStatus(
+        experimental === imported.experimentalHeaderMenuEnabled
+          ? "Settings imported."
+          : "Settings imported. Netflix permission was not granted, so Hidden Categories stayed off.",
+      );
+    } catch (error) {
+      console.error(error);
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : "Could not import that file. Try again.",
+      );
+    } finally {
+      setBusy(false);
+      if (importInputRef.current) importInputRef.current.value = "";
+    }
   };
 
   const runDataAction = async (label: string, work: () => Promise<void>) => {
@@ -112,6 +164,54 @@ export function OptionsApp() {
             still works if the header cannot attach.
           </p>
         ) : null}
+      </section>
+
+      <section className="mt-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-ink-soft)] p-5">
+        <h2 className="text-xs font-semibold tracking-[0.16em] text-[var(--color-muted)] uppercase">
+          Backup
+        </h2>
+        <p className="mt-2 text-xs text-[var(--color-muted)]">
+          Export favorites, hidden, empty, recent, theme, and other local
+          settings as a JSON file. Import replaces the current state on this
+          browser.
+        </p>
+        <input
+          ref={importInputRef}
+          type="file"
+          accept="application/json,.json"
+          className="hidden"
+          aria-label="Import settings file"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const ok = window.confirm(
+              "Replace favorites, hidden, empty, recent, and other settings with this file?",
+            );
+            if (!ok) {
+              event.target.value = "";
+              return;
+            }
+            void importSettingsFile(file);
+          }}
+        />
+        <div className="mt-4 flex flex-col gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            className="w-full rounded-xl border border-[var(--color-line)] bg-[var(--color-panel)] px-3 py-2.5 text-left text-sm font-medium text-[var(--color-text)] hover:border-[var(--color-muted)] disabled:opacity-60"
+            onClick={exportSettings}
+          >
+            Export settings
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            className="w-full rounded-xl border border-[var(--color-line)] bg-[var(--color-panel)] px-3 py-2.5 text-left text-sm font-medium text-[var(--color-text)] hover:border-[var(--color-muted)] disabled:opacity-60"
+            onClick={() => importInputRef.current?.click()}
+          >
+            Import settings
+          </button>
+        </div>
       </section>
 
       <section className="mt-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-ink-soft)] p-5">

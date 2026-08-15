@@ -44,7 +44,7 @@ Automated WXT store publishing is a future option, not required.
 
 ### storage
 
-Stores Favorites, Hidden categories, Empty categories, Recent extension selections, and settings locally.
+Stores Favorites, Hidden categories, Empty categories, Recent extension selections, and settings locally. Users may export or import that local JSON from Options.
 
 ### activeTab
 
