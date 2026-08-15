@@ -1,4 +1,3 @@
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import type { Category, FlatCategory, OpenCategoryFn } from "../lib/types";
 import { CategoryRow } from "./CategoryRow";
@@ -30,35 +29,17 @@ export function CategoryGroup({
 
   return (
     <section className="px-2">
-      <div className="flex items-center">
-        {children.length ? (
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-label={`${open ? "Collapse" : "Expand"} ${category.name}`}
-            onClick={() => setOpen((value) => !value)}
-            className="rounded-md p-1 text-[var(--color-muted)] hover:text-[var(--color-text)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none"
-          >
-            {open ? (
-              <ChevronDown className="size-4" />
-            ) : (
-              <ChevronRight className="size-4" />
-            )}
-          </button>
-        ) : (
-          <span className="w-6" />
-        )}
-        <div className="min-w-0 flex-1">
-          <CategoryRow
-            category={flat}
-            isFavorite={favorites.has(category.id)}
-            isHidden={hidden.has(category.id)}
-            onOpen={onOpen}
-            onFavorite={onFavorite}
-            onHide={onHide}
-          />
-        </div>
-      </div>
+      <CategoryRow
+        category={flat}
+        isFavorite={favorites.has(category.id)}
+        isHidden={hidden.has(category.id)}
+        expandable={children.length > 0}
+        expanded={open}
+        onToggleExpand={() => setOpen((value) => !value)}
+        onOpen={onOpen}
+        onFavorite={onFavorite}
+        onHide={onHide}
+      />
       {open && children.length ? (
         <div className="ml-4 border-l border-[var(--color-line)] pl-1">
           {children.map((child) =>

@@ -3,9 +3,11 @@ import {
   addRecent,
   DEFAULT_PREFERENCES,
   hideCategory,
+  markEmpty,
   migratePreferences,
   toggleFavorite,
   unhideCategory,
+  unmarkEmpty,
 } from "../lib/preferences";
 
 describe("preferences", () => {
@@ -54,10 +56,19 @@ describe("preferences", () => {
     expect(migrated.favorites).toEqual(["x"]);
     expect(migrated.experimentalHeaderMenuEnabled).toBe(false);
     expect(migrated.theme).toBe("dark");
+    expect(migrated.emptyCategories).toEqual([]);
   });
 
   test("migrate keeps a saved light theme", () => {
     const migrated = migratePreferences({ theme: "light" });
     expect(migrated.theme).toBe("light");
+  });
+
+  test("markEmpty prepends unique ids and unmark removes them", () => {
+    const first = markEmpty(DEFAULT_PREFERENCES, "a");
+    const again = markEmpty(first, "a");
+    expect(first.emptyCategories).toEqual(["a"]);
+    expect(again.emptyCategories).toEqual(["a"]);
+    expect(unmarkEmpty(first, "a").emptyCategories).toEqual([]);
   });
 });

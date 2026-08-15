@@ -10,6 +10,8 @@ interface MegaMenuProps {
   onHide: (id: string) => void;
   onUnhide: (id: string) => void;
   onRestoreHidden: () => void;
+  onUnmarkEmpty: (id: string) => void;
+  onClearEmpty: () => void;
   onClearRecent: () => void;
   onOpened: (id: string) => void;
 }
@@ -22,6 +24,8 @@ export function MegaMenu({
   onHide,
   onUnhide,
   onRestoreHidden,
+  onUnmarkEmpty,
+  onClearEmpty,
   onClearRecent,
   onOpened,
 }: MegaMenuProps) {
@@ -69,6 +73,8 @@ export function MegaMenu({
           onHide={onHide}
           onUnhide={onUnhide}
           onRestoreHidden={onRestoreHidden}
+          onUnmarkEmpty={onUnmarkEmpty}
+          onClearEmpty={onClearEmpty}
           onClearRecent={onClearRecent}
           onOpened={async (id) => {
             await onOpened(id);

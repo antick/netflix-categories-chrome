@@ -13,6 +13,7 @@ import type {
 } from "../lib/types";
 import { CategoryList } from "./CategoryList";
 import { CategoryRow } from "./CategoryRow";
+import { EmptySection } from "./EmptySection";
 import { EmptyState } from "./EmptyState";
 import { FavoritesSection } from "./FavoritesSection";
 import { HiddenSection } from "./HiddenSection";
@@ -26,6 +27,8 @@ interface CategoryBrowserProps {
   onHide: (id: string) => void;
   onUnhide: (id: string) => void;
   onRestoreHidden: () => void;
+  onUnmarkEmpty: (id: string) => void;
+  onClearEmpty: () => void;
   onClearRecent: () => void;
   onOpened: (id: string) => void;
   compact?: boolean;
@@ -37,6 +40,8 @@ export function CategoryBrowser({
   onHide,
   onUnhide,
   onRestoreHidden,
+  onUnmarkEmpty,
+  onClearEmpty,
   onClearRecent,
   onOpened,
   compact = false,
@@ -55,40 +60,57 @@ export function CategoryBrowser({
     () => new Set(prefs.hiddenCategories),
     [prefs.hiddenCategories],
   );
+  const empty = useMemo(
+    () => new Set(prefs.emptyCategories),
+    [prefs.emptyCategories],
+  );
   const visibleTree = useMemo(
-    () => getVisibleTree(prefs.hiddenCategories),
-    [prefs.hiddenCategories],
+    () => getVisibleTree(prefs.hiddenCategories, prefs.emptyCategories),
+    [prefs.hiddenCategories, prefs.emptyCategories],
   );
 
   const favoriteItems = useMemo(
     () =>
       prefs.favorites
         .map((id) => flatById.get(id))
-        .filter((item): item is FlatCategory => Boolean(item)),
-    [flatById, prefs.favorites],
+        .filter((item): item is FlatCategory => Boolean(item))
+        .filter((item) => !empty.has(item.id)),
+    [flatById, prefs.favorites, empty],
   );
   const recentItems = useMemo(
     () =>
       prefs.recentCategories
         .map((id) => flatById.get(id))
-        .filter((item): item is FlatCategory => Boolean(item)),
-    [flatById, prefs.recentCategories],
+        .filter((item): item is FlatCategory => Boolean(item))
+        .filter((item) => !empty.has(item.id)),
+    [flatById, prefs.recentCategories, empty],
   );
   const hiddenItems = useMemo(
     () =>
       prefs.hiddenCategories
         .map((id) => flatById.get(id))
+        .filter((item): item is FlatCategory => Boolean(item))
+        .filter((item) => !empty.has(item.id)),
+    [flatById, prefs.hiddenCategories, empty],
+  );
+  const emptyItems = useMemo(
+    () =>
+      prefs.emptyCategories
+        .map((id) => flatById.get(id))
         .filter((item): item is FlatCategory => Boolean(item)),
-    [flatById, prefs.hiddenCategories],
+    [flatById, prefs.emptyCategories],
   );
 
   const results = useMemo(
     () =>
       searchCategories(query, {
-        includeHidden,
+        includeHidden: includeHidden || tab === "hidden" || tab === "empty",
         hiddenIds: prefs.hiddenCategories,
+        emptyIds: prefs.emptyCategories,
+        includeEmpty: tab === "empty",
+        emptyOnly: tab === "empty",
       }),
-    [query, includeHidden, prefs.hiddenCategories],
+    [query, includeHidden, tab, prefs.hiddenCategories, prefs.emptyCategories],
   );
 
   const open: OpenCategoryFn = async (id, behavior) => {
@@ -128,6 +150,7 @@ export function CategoryBrowser({
           favorites: favoriteItems.length,
           recent: recentItems.length,
           hidden: hiddenItems.length,
+          empty: emptyItems.length,
         }}
       />
       <SearchInput
@@ -149,8 +172,8 @@ export function CategoryBrowser({
       </label>
       {compact ? null : (
         <p className="mt-1 px-4 text-[11px] leading-4 text-[var(--color-muted)]">
-          Empty Netflix pages are regional. A code can have titles in another
-          country or fill in later.
+          Empty Netflix pages are regional. Opening one moves it to Empty.
+          Restore it if titles show up later.
         </p>
       )}
       <div className="mt-2 min-h-0 flex-1 overflow-y-auto">
@@ -207,6 +230,18 @@ export function CategoryBrowser({
             onHide={onHide}
             onUnhide={onUnhide}
             onRestoreAll={onRestoreHidden}
+            showTitle={false}
+          />
+        ) : tab === "empty" ? (
+          <EmptySection
+            items={emptyItems}
+            favorites={favorites}
+            hidden={hidden}
+            onOpen={open}
+            onFavorite={onFavorite}
+            onHide={onHide}
+            onUnmarkEmpty={onUnmarkEmpty}
+            onClearEmpty={onClearEmpty}
             showTitle={false}
           />
         ) : (

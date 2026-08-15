@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   addRecent,
+  clearEmpty,
   clearFavorites,
   clearRecent,
   hideCategory,
@@ -8,6 +9,7 @@ import {
   restoreAllHidden,
   toggleFavorite,
   unhideCategory,
+  unmarkEmpty,
 } from "./preferences";
 import {
   loadPreferences,
@@ -64,6 +66,8 @@ export function usePreferences() {
     hide: (id: string) => patch((current) => hideCategory(current, id)),
     unhide: (id: string) => patch((current) => unhideCategory(current, id)),
     restoreHidden: () => patch(restoreAllHidden),
+    unmarkEmpty: (id: string) => patch((current) => unmarkEmpty(current, id)),
+    clearEmpty: () => patch(clearEmpty),
     rememberRecent: (id: string) => patch((current) => addRecent(current, id)),
     clearRecent: () => patch(clearRecent),
     clearFavorites: () => patch(clearFavorites),

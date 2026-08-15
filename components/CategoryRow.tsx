@@ -1,4 +1,13 @@
-import { Copy, EyeOff, MoreHorizontal, Star } from "lucide-react";
+import {
+  AppWindow,
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  EyeOff,
+  MoreHorizontal,
+  SquareArrowOutUpRight,
+  Star,
+} from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { getNetflixCategoryUrl } from "../lib/netflix-url";
 import type { FlatCategory, OpenCategoryFn } from "../lib/types";
@@ -8,6 +17,9 @@ interface CategoryRowProps {
   isFavorite: boolean;
   isHidden: boolean;
   selected?: boolean;
+  expandable?: boolean;
+  expanded?: boolean;
+  onToggleExpand?: () => void;
   onOpen: OpenCategoryFn;
   onFavorite: (id: string) => void;
   onHide: (id: string) => void;
@@ -19,6 +31,9 @@ export function CategoryRow({
   isFavorite,
   isHidden,
   selected = false,
+  expandable = false,
+  expanded = false,
+  onToggleExpand,
   onOpen,
   onFavorite,
   onHide,
@@ -42,15 +57,22 @@ export function CategoryRow({
     setMenuOpen(false);
   };
 
-  return (
-    <div
-      className={`group flex items-center gap-1.5 rounded-lg px-2 py-1.5 ${selected ? "bg-[var(--color-panel)]" : "hover:bg-[var(--color-panel)]"}`}
-    >
-      <div className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-medium text-[var(--color-text)]">
+  const identity = (
+    <>
+      {expandable ? (
+        expanded ? (
+          <ChevronDown className="size-4 shrink-0 text-[var(--color-muted)]" />
+        ) : (
+          <ChevronRight className="size-4 shrink-0 text-[var(--color-muted)]" />
+        )
+      ) : (
+        <span className="w-4 shrink-0" />
+      )}
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-sans text-sm font-medium text-[var(--color-text)]">
           {category.name}
         </span>
-        <span className="flex items-center gap-2 text-xs text-[var(--color-muted)]">
+        <span className="flex items-center gap-2 font-sans text-xs text-[var(--color-muted)]">
           <span className="font-mono tabular-nums">{category.code}</span>
           {category.parentName ? (
             <span className="truncate">{category.parentName}</span>
@@ -61,24 +83,47 @@ export function CategoryRow({
             </span>
           ) : null}
         </span>
-      </div>
+      </span>
+    </>
+  );
+
+  return (
+    <div
+      className={`group flex items-center gap-0.5 rounded-lg px-1 py-1.5 ${selected ? "bg-[var(--color-panel)]" : "hover:bg-[var(--color-panel)]"}`}
+    >
+      {expandable ? (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          aria-label={`${expanded ? "Collapse" : "Expand"} ${category.name}`}
+          title={expanded ? "Collapse" : "Expand"}
+          onClick={onToggleExpand}
+          className="flex min-w-0 flex-1 items-center gap-1.5 rounded-md px-1 text-left focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none"
+        >
+          {identity}
+        </button>
+      ) : (
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1">
+          {identity}
+        </div>
+      )}
       <button
         type="button"
         aria-label={`Open ${category.name} in this tab`}
-        title="This tab"
+        title="Open in this tab"
         onClick={() => onOpen(category.id, "reuse-current-tab")}
-        className="rounded-md border border-[var(--color-line)] px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--color-text)] uppercase hover:border-[var(--color-accent)] hover:text-[var(--color-accent-soft)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none"
+        className="rounded-md p-1.5 text-[var(--color-muted)] hover:text-[var(--color-text)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none"
       >
-        Tab
+        <AppWindow className="size-4" />
       </button>
       <button
         type="button"
         aria-label={`Open ${category.name} in a new tab`}
-        title="New tab"
+        title="Open in a new tab"
         onClick={() => onOpen(category.id, "new-tab")}
-        className="rounded-md border border-[var(--color-line)] px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--color-text)] uppercase hover:border-[var(--color-accent)] hover:text-[var(--color-accent-soft)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none"
+        className="rounded-md p-1.5 text-[var(--color-muted)] hover:text-[var(--color-text)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none"
       >
-        New
+        <SquareArrowOutUpRight className="size-4" />
       </button>
       <button
         type="button"
@@ -87,6 +132,7 @@ export function CategoryRow({
             ? `Remove ${category.name} from favorites`
             : `Favorite ${category.name}`
         }
+        title={isFavorite ? "Remove favorite" : "Favorite"}
         onClick={() => onFavorite(category.id)}
         className="rounded-md p-1.5 text-[var(--color-muted)] hover:text-[var(--color-accent-soft)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none"
       >
@@ -98,6 +144,7 @@ export function CategoryRow({
         <button
           type="button"
           aria-label={`More actions for ${category.name}`}
+          title="More"
           aria-expanded={menuOpen}
           aria-controls={menuId}
           onClick={() => setMenuOpen((open) => !open)}
@@ -157,7 +204,7 @@ function MenuItem({
       type="button"
       role="menuitem"
       onClick={onClick}
-      className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-[var(--color-text)] hover:bg-[var(--color-panel)]"
+      className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-sans text-sm text-[var(--color-text)] hover:bg-[var(--color-panel)]"
     >
       {children}
     </button>

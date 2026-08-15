@@ -2,7 +2,7 @@
 
 ### Requirement: Popup SHALL be the stable primary experience
 
-The popup SHALL be usable immediately after installation with real bundled category data. Suggested size is 440px wide and about 620px maximum useful height, subject to Chrome constraints. Layout SHALL include product title, theme toggle, settings access, All / Favorites / Recent / Hidden tabs matching the Netflix mega menu, search, optional experimental promotion, and the selected tab's list.
+The popup SHALL be usable immediately after installation with real bundled category data. Suggested size is 440px wide and about 620px maximum useful height, subject to Chrome constraints. Layout SHALL include product title, theme toggle, settings access, All / Favorites / Recent / Hidden / Empty tabs matching the Netflix mega menu, search, optional experimental promotion, and the selected tab's list.
 
 #### Scenario: Fresh install shows real categories
 
@@ -23,19 +23,38 @@ The popup SHALL offer Light and Dark themes. Dark SHALL use elevated warm charco
 - **WHEN** the user selects Light in the popup
 - **THEN** the popup uses the light palette and that choice is restored on the next open
 
-### Requirement: Category rows SHALL expose Tab and New open actions plus Favorite
+### Requirement: Empty categories SHALL move to an Empty tab
 
-Each category row SHALL include small **Tab** and **New** controls to open that Netflix category in the current tab or a new tab. The category name SHALL NOT be the primary open control. A direct Favorite control SHALL be present. Overflow MAY include Hide, Copy code, and Copy URL. Tooltips SHALL be used where appropriate.
+When a category opened through this extension shows Netflix's empty-state copy on `/browse/genre/<code>` (for example "No matching titles found" or "No titles found") after the page has settled, that category SHALL move out of All, Favorites, Recent, and Hidden into an Empty tab in both the popup and the mega menu. Presence of title links SHALL unmark it. Users SHALL be able to restore one or all. Detection MUST NOT scrape titles, cookies, or private APIs.
 
-#### Scenario: Tab button opens the category in the current Netflix tab
+#### Scenario: Opening an empty genre moves it to Empty
 
-- **WHEN** the user activates Tab on a category row
+- **WHEN** the user opens a category and Netflix shows no matching titles for that genre page
+- **THEN** the category disappears from All and appears in the Empty tab
+
+#### Scenario: Restore returns an empty category to the list
+
+- **WHEN** the user restores a category from Empty
+- **THEN** it reappears in All (and Favorites if it was still favorited)
+
+### Requirement: Category rows SHALL expose icon open actions plus Favorite
+
+Each category row SHALL include icon controls to open that Netflix category in the current tab or a new tab, with visible tooltips and accessible names. The category name SHALL NOT be the primary open control. If the row has children, activating the name or chevron SHALL expand or collapse that group. A direct Favorite control SHALL be present. Overflow MAY include Hide, Copy code, and Copy URL.
+
+#### Scenario: Current-tab icon opens the category in the current Netflix tab
+
+- **WHEN** the user activates the current-tab icon on a category row
 - **THEN** the extension opens `https://www.netflix.com/browse/genre/<code>` in the current/reused Netflix tab
 
-#### Scenario: New button opens the category in a new tab
+#### Scenario: New-tab icon opens the category in a new tab
 
-- **WHEN** the user activates New on a category row
+- **WHEN** the user activates the new-tab icon on a category row
 - **THEN** the extension opens that URL in a new tab
+
+#### Scenario: Name click expands a parent row
+
+- **WHEN** a category has children and the user activates the name area
+- **THEN** the child list expands or collapses the same as the chevron
 
 ### Requirement: Experimental promotion SHALL be dismissible on fresh install
 

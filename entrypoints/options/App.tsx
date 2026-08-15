@@ -161,6 +161,18 @@ export function OptionsApp() {
           <button
             type="button"
             disabled={busy}
+            className="w-full rounded-xl border border-[var(--color-line)] bg-[var(--color-panel)] px-3 py-2.5 text-left text-sm font-medium text-[var(--color-text)] hover:border-[var(--color-muted)] disabled:opacity-60"
+            onClick={() =>
+              void runDataAction("Empty list cleared.", () =>
+                prefsApi.clearEmpty(),
+              )
+            }
+          >
+            Restore All Empty Categories
+          </button>
+          <button
+            type="button"
+            disabled={busy}
             className="w-full rounded-xl border border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 px-3 py-2.5 text-left text-sm font-medium text-[var(--color-accent-soft)] hover:border-[var(--color-accent)] disabled:opacity-60"
             onClick={() =>
               void runDataAction("All settings reset.", async () => {

@@ -23,7 +23,7 @@ Researched on **2026-08-15**.
 
 Conflicting or malformed rows were dropped. Duplicate IDs/codes keep the first normalized name.
 
-**Empty "No titles found" pages are expected.** Netflix's catalog is regional. A public genre code can have titles in the US and none in India (or the reverse), and Netflix can fill or empty a code later. The extension does **not** scrape Netflix to prune those rows. Keep the code unless a public source shows it is retired.
+**Empty "No titles found" pages are expected.** Netflix's catalog is regional. A public genre code can have titles in the US and none in India (or the reverse), and Netflix can fill or empty a code later. The extension does **not** scrape Netflix to prune those rows from the bundled dataset. After you open a genre that Netflix shows as empty, the extension moves that category into the **Empty** tab (popup and mega menu) so you can skip it next time. Restore it if titles appear later. Keep the code in the JSON unless a public source shows it is retired.
 
 Uncertain items: a few grouping parents (for example Featured Collections landing on Recently Added `1592210`, Niche Collections landing on Biographical `1096`) reuse a real public code as the group URL rather than inventing a fake ID.
 

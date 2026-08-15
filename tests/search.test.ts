@@ -34,6 +34,27 @@ describe("search", () => {
     expect(hits.some((hit) => hit.category.id === sample.id)).toBe(true);
   });
 
+  test("excludes empty categories unless includeEmpty is on", () => {
+    const hits = searchCategories(sample.name, { emptyIds: [sample.id] });
+    expect(hits.some((hit) => hit.category.id === sample.id)).toBe(false);
+    const included = searchCategories(sample.name, {
+      emptyIds: [sample.id],
+      includeEmpty: true,
+    });
+    expect(included.some((hit) => hit.category.id === sample.id)).toBe(true);
+  });
+
+  test("emptyOnly restricts results to marked empty ids", () => {
+    const other =
+      getAllCategories().find((item) => item.id !== sample.id) ?? sample;
+    const hits = searchCategories(sample.name, {
+      emptyIds: [other.id],
+      includeEmpty: true,
+      emptyOnly: true,
+    });
+    expect(hits.some((hit) => hit.category.id === sample.id)).toBe(false);
+  });
+
   test("child results include parent context", () => {
     const child = getAllCategories().find((item) => item.parentName);
     if (!child) return;

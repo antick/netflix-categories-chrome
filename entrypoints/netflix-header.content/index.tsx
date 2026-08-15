@@ -1,23 +1,37 @@
 import "./style.css";
 import "~/assets/tailwind.css";
 import ReactDOM from "react-dom/client";
+import { getCategoryByCode } from "../../lib/categories";
+import {
+  classifyGenrePage,
+  EMPTY_PAGE_SETTLE_MS,
+  extractGenreCodeFromPath,
+} from "../../lib/genre-empty";
 import {
   findNetflixNavigationAnchor,
   HEADER_CONTROL_LABEL,
+  HEADER_EXTENSION_MARK,
+  hasCurrentHeaderControl,
   hasInjectedButton,
+  hideForeignCategoryLabels,
   placeCategoriesButton,
   removeInjectedButtons,
   removeInjectedHeaderUi,
   shouldMountOnPath,
 } from "../../lib/netflix-dom";
-import { loadPreferences, subscribeToPreferences } from "../../lib/storage";
+import { markEmpty, unmarkEmpty } from "../../lib/preferences";
+import {
+  loadPreferences,
+  savePreferences,
+  subscribeToPreferences,
+} from "../../lib/storage";
 import type { ExtensionPreferences } from "../../lib/types";
 import { usePreferences } from "../../lib/use-preferences";
 import { MegaMenu } from "./MegaMenu";
 
 const HOST_NAME = "netflix-categories-menu";
 const BOOTSTRAP_ATTR = "data-nc-header-bootstrapped";
-const SCRIPT_VERSION = "hidden-categories-v1";
+const SCRIPT_VERSION = "hidden-categories-empty-v2";
 
 function MenuRoot({ onClose, open }: { open: boolean; onClose: () => void }) {
   const prefsApi = usePreferences();
@@ -31,6 +45,8 @@ function MenuRoot({ onClose, open }: { open: boolean; onClose: () => void }) {
       onHide={(id) => void prefsApi.hide(id)}
       onUnhide={(id) => void prefsApi.unhide(id)}
       onRestoreHidden={() => void prefsApi.restoreHidden()}
+      onUnmarkEmpty={(id) => void prefsApi.unmarkEmpty(id)}
+      onClearEmpty={() => void prefsApi.clearEmpty()}
       onClearRecent={() => void prefsApi.clearRecent()}
       onOpened={(id) => void prefsApi.rememberRecent(id)}
     />
@@ -43,11 +59,8 @@ export default defineContentScript({
   cssInjectionMode: "ui",
 
   async main(ctx) {
-    if (
-      document.documentElement.getAttribute(BOOTSTRAP_ATTR) === SCRIPT_VERSION
-    )
-      return;
     removeInjectedHeaderUi();
+    hideForeignCategoryLabels();
     document.documentElement.setAttribute(BOOTSTRAP_ATTR, SCRIPT_VERSION);
 
     let button: HTMLButtonElement | null = null;
@@ -110,8 +123,8 @@ export default defineContentScript({
         existing?.querySelector("button");
       if (
         existing &&
-        existingButton &&
-        existingButton.textContent === HEADER_CONTROL_LABEL
+        existingButton instanceof HTMLButtonElement &&
+        hasCurrentHeaderControl()
       ) {
         item = existing;
         button = existingButton;
@@ -123,6 +136,7 @@ export default defineContentScript({
         nav.tagName === "UL" || nav.tagName === "OL" ? "li" : "div",
       );
       item.setAttribute("data-nc-categories-button", "true");
+      item.setAttribute("data-nc-ext", HEADER_EXTENSION_MARK);
       item.style.display = "inline-flex";
       item.style.alignItems = "center";
       item.style.flex = "0 0 auto";
@@ -130,6 +144,8 @@ export default defineContentScript({
       item.style.zIndex = "20";
       item.style.margin = "0 40px 0 12px";
       item.style.listStyle = "none";
+      item.style.fontFamily = "inherit";
+      item.style.fontWeight = "500";
 
       const shadow = item.attachShadow({ mode: "open" });
       const styles = document.createElement("style");
@@ -141,10 +157,14 @@ export default defineContentScript({
           border-radius: 4px;
           color: #e50914;
           cursor: pointer;
-          font: 700 13px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif;
-          letter-spacing: 0.04em;
+          font-family: inherit;
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0;
+          line-height: 1.25;
           padding: 6px 12px;
           white-space: nowrap;
+          -webkit-font-smoothing: antialiased;
         }
         button:hover,
         button[aria-expanded="true"] {
@@ -180,6 +200,7 @@ export default defineContentScript({
           removeInjected();
           return;
         }
+        hideForeignCategoryLabels();
         if (!shouldMountOnPath(location.pathname)) {
           removeInjected();
           return;
@@ -259,6 +280,38 @@ export default defineContentScript({
     ctx.addEventListener(window, "scroll", () => {
       if (open) positionShell();
     });
+
+    const syncEmptyGenrePage = async () => {
+      if (ctx.isInvalid) return;
+      const code = extractGenreCodeFromPath(location.pathname);
+      if (!code) return;
+      const category = getCategoryByCode(code);
+      if (!category) return;
+      const status = classifyGenrePage(document, location.pathname);
+      if (status === "loading") return;
+      const prefs = await loadPreferences();
+      const next =
+        status === "empty"
+          ? markEmpty(prefs, category.id)
+          : unmarkEmpty(prefs, category.id);
+      if (next !== prefs) await savePreferences(next);
+    };
+
+    let emptyTimer = 0;
+    const scheduleEmptyCheck = () => {
+      window.clearTimeout(emptyTimer);
+      emptyTimer = window.setTimeout(() => {
+        void syncEmptyGenrePage();
+      }, EMPTY_PAGE_SETTLE_MS);
+    };
+
+    ctx.addEventListener(window, "wxt:locationchange", scheduleEmptyCheck);
+    const emptyObserver = new MutationObserver(scheduleEmptyCheck);
+    emptyObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+    scheduleEmptyCheck();
 
     await mount();
   },

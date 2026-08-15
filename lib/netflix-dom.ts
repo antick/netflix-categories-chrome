@@ -264,9 +264,36 @@ export function placeCategoriesButton(
 
 export const HEADER_CONTROL_LABEL = "Hidden Categories";
 export const HEADER_OVERLAY_TAG = "netflix-categories-menu";
+export const HEADER_EXTENSION_MARK = "netflix-categories-chrome";
+
+function headerControlLabel(host: Element): string {
+  const button =
+    host.shadowRoot?.querySelector("button") ?? host.querySelector("button");
+  return button?.textContent?.replace(/\s+/g, " ").trim() ?? "";
+}
 
 export function hasInjectedButton(root: ParentNode = document): boolean {
   return Boolean(root.querySelector("[data-nc-categories-button]"));
+}
+
+export function hasCurrentHeaderControl(root: ParentNode = document): boolean {
+  const host = root.querySelector("[data-nc-categories-button]");
+  if (!isHtmlElement(host)) return false;
+  return headerControlLabel(host) === HEADER_CONTROL_LABEL;
+}
+
+export function hideForeignCategoryLabels(root: ParentNode = document): void {
+  const nodes = root.querySelectorAll("a, button, span, li, div");
+  for (const node of nodes) {
+    if (!isHtmlElement(node)) continue;
+    if (node.closest("[data-nc-categories-button]")) continue;
+    if (node.hasAttribute("data-nc-categories-button")) continue;
+    const text = node.textContent?.replace(/\s+/g, " ").trim();
+    if (text !== "Categories") continue;
+    if ((node.textContent?.length ?? 0) > 24) continue;
+    node.setAttribute("data-nc-foreign-categories", "true");
+    node.style.display = "none";
+  }
 }
 
 export function removeInjectedButtons(root: ParentNode = document): void {

@@ -98,8 +98,12 @@ export function getRecentCategories(recentIds: string[]): FlatCategory[] {
     .filter((item): item is FlatCategory => Boolean(item));
 }
 
-export function getVisibleTree(hiddenIds: string[]): Category[] {
+export function getVisibleTree(
+  hiddenIds: string[],
+  emptyIds: string[] = [],
+): Category[] {
   const hidden = new Set(hiddenIds);
+  const empty = new Set(emptyIds);
 
   const filterTree = (categories: Category[]): Category[] => {
     const visible: Category[] = [];
@@ -108,6 +112,10 @@ export function getVisibleTree(hiddenIds: string[]): Category[] {
       const children = category.children
         ? filterTree(category.children)
         : undefined;
+      if (empty.has(category.id)) {
+        if (children?.length) visible.push(...children);
+        continue;
+      }
       visible.push(children ? { ...category, children } : category);
     }
     return visible;

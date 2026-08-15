@@ -41,4 +41,30 @@ describe("category dataset", () => {
     const tree = getVisibleTree([parent.id]);
     expect(tree.some((item) => item.id === parent.id)).toBe(false);
   });
+
+  test("empty ids are omitted from All but children stay visible", () => {
+    const parent = getDataset().categories.find(
+      (item) => item.children?.length,
+    );
+    expect(parent).toBeDefined();
+    const child = parent!.children![0]!;
+    const tree = getVisibleTree([], [parent!.id]);
+    expect(tree.some((item) => item.id === parent!.id)).toBe(false);
+    const visibleIds = tree.flatMap(function collect(item): string[] {
+      return [item.id, ...(item.children?.flatMap(collect) ?? [])];
+    });
+    expect(visibleIds).toContain(child.id);
+  });
+
+  test("an empty child is omitted while its parent remains", () => {
+    const parent = getDataset().categories.find(
+      (item) => item.children?.length,
+    );
+    expect(parent).toBeDefined();
+    const child = parent!.children![0]!;
+    const tree = getVisibleTree([], [child.id]);
+    const shown = tree.find((item) => item.id === parent!.id);
+    expect(shown).toBeDefined();
+    expect(shown?.children?.some((item) => item.id === child.id)).toBe(false);
+  });
 });

@@ -25,7 +25,7 @@ When enabled, the extension SHALL briefly explain the site permission, request r
 
 ### Requirement: Content script SHALL be narrowly scoped
 
-The Netflix content script MAY locate navigation, mount extension-owned Categories UI, open/close the mega menu, read extension local storage, navigate to `/browse/genre/<CODE>`, observe navigation/header remounts, and clean itself up. It MUST NOT read Netflix cookies, credentials, or account data; call private APIs; inspect internal app state; scrape titles; alter playback, DRM, geo, household, or subscription behavior.
+The Netflix content script MAY locate navigation, mount extension-owned Categories UI, open/close the mega menu, read extension local storage, navigate to `/browse/genre/<CODE>`, observe navigation/header remounts, classify a genre page as empty from Netflix's public empty-state copy after the page settles, and clean itself up. It MUST NOT read Netflix cookies, credentials, or account data; call private APIs; inspect internal app state; scrape titles; alter playback, DRM, geo, household, or subscription behavior.
 
 #### Scenario: Content script does not read cookies
 
@@ -52,7 +52,7 @@ The script SHALL remount exactly once when the injected host disappears, avoid d
 
 ### Requirement: Mega menu SHALL reuse shared search and library sections
 
-The Hidden Categories control SHALL be accessible, keyboard-capable, use `aria-expanded`, close on outside click and Escape, and restore focus. The label SHALL be "Hidden Categories" and visually distinct from Netflix's own nav (bold and accent color) with spacing from Search. The mega menu SHALL open aligned to that control (typically under it on the right), include All, Favorites, Recent, and Hidden, use the shared search engine, clamp to the viewport, scroll internally, and avoid page-level horizontal overflow. Suggested size is about 440px wide and `max-height: min(72vh, 640px)`. Injected UI MUST stay dark with readable light text regardless of OS color scheme.
+The Hidden Categories control SHALL be accessible, keyboard-capable, use `aria-expanded`, close on outside click and Escape, and restore focus. The label SHALL be "Hidden Categories" and visually distinct from Netflix's own nav (accent color) with spacing from Search. Type on that control SHALL inherit Netflix header font metrics (medium weight, no heavy tracking) instead of a custom bold Helvetica stack. The mega menu SHALL open aligned to that control (typically under it on the right), include All, Favorites, Recent, Hidden, and Empty, use the shared search engine, clamp to the viewport, scroll internally, and avoid page-level horizontal overflow. Suggested size is about 440px wide and `max-height: min(72vh, 640px)`. Injected UI MUST stay dark with readable light text regardless of OS color scheme.
 
 #### Scenario: Escape closes an empty-search menu
 

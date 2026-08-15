@@ -57,3 +57,5 @@
 - [x] 7.2 Rename and highlight Hidden Categories, align mega menu to the control, and fix contrast
 - [x] 7.3 Fix Options data actions with confirmation; highlight Experimental; remove global open-behavior setting
 - [x] 7.4 Add All/Favorites/Recent/Hidden tabs to the popup and Light/Dark themes
+- [x] 7.5 Add Empty tab; move region-empty genre pages there from popup and mega menu
+- [x] 7.6 Replace Tab/New with icon+tooltip actions, expand on row click, and match header type to Netflix

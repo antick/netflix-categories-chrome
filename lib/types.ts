@@ -36,6 +36,7 @@ export interface ExtensionPreferences {
   experimentalHeaderMenuNoticeDismissed: boolean;
   openBehavior: OpenBehavior;
   theme: ThemePreference;
+  emptyCategories: string[];
 }
 
 export interface SearchHit {

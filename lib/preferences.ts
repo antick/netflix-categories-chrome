@@ -17,6 +17,7 @@ export const DEFAULT_PREFERENCES: ExtensionPreferences = {
   experimentalHeaderMenuNoticeDismissed: false,
   openBehavior: "reuse-current-tab",
   theme: "dark",
+  emptyCategories: [],
 };
 
 function uniqueIds(ids: unknown): string[] {
@@ -51,6 +52,7 @@ export function migratePreferences(raw: unknown): ExtensionPreferences {
     ),
     openBehavior,
     theme,
+    emptyCategories: uniqueIds(input.emptyCategories),
   };
 }
 
@@ -94,6 +96,31 @@ export function restoreAllHidden(
   prefs: ExtensionPreferences,
 ): ExtensionPreferences {
   return { ...prefs, hiddenCategories: [] };
+}
+
+export function markEmpty(
+  prefs: ExtensionPreferences,
+  id: string,
+): ExtensionPreferences {
+  if (prefs.emptyCategories.includes(id)) return prefs;
+  return {
+    ...prefs,
+    emptyCategories: [id, ...prefs.emptyCategories],
+  };
+}
+
+export function unmarkEmpty(
+  prefs: ExtensionPreferences,
+  id: string,
+): ExtensionPreferences {
+  return {
+    ...prefs,
+    emptyCategories: prefs.emptyCategories.filter((item) => item !== id),
+  };
+}
+
+export function clearEmpty(prefs: ExtensionPreferences): ExtensionPreferences {
+  return { ...prefs, emptyCategories: [] };
 }
 
 export function addRecent(

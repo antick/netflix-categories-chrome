@@ -1,0 +1,10 @@
+---
+description: After each change, suggest a commit message without committing
+alwaysApply: true
+---
+
+# Suggest a commit message
+
+After finishing a code or docs change, always suggest a concise commit message (1–2 sentences, why over what) that matches this repo's style.
+
+Do not create a git commit unless the user explicitly asks to commit.

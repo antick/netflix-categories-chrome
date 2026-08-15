@@ -89,6 +89,8 @@ export function App() {
         onHide={(id) => void prefsApi.hide(id)}
         onUnhide={(id) => void prefsApi.unhide(id)}
         onRestoreHidden={() => void prefsApi.restoreHidden()}
+        onUnmarkEmpty={(id) => void prefsApi.unmarkEmpty(id)}
+        onClearEmpty={() => void prefsApi.clearEmpty()}
         onClearRecent={() => void prefsApi.clearRecent()}
         onOpened={(id) => void prefsApi.rememberRecent(id)}
       />

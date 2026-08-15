@@ -8,6 +8,9 @@ import type { SearchHit } from "./types";
 export interface SearchOptions {
   includeHidden?: boolean;
   hiddenIds?: string[];
+  emptyIds?: string[];
+  includeEmpty?: boolean;
+  emptyOnly?: boolean;
   limit?: number;
 }
 
@@ -20,7 +23,10 @@ export function searchCategories(
 
   const needle = trimmed.toLowerCase();
   const hidden = new Set(options.hiddenIds ?? []);
+  const empty = new Set(options.emptyIds ?? []);
   const includeHidden = options.includeHidden ?? false;
+  const includeEmpty = options.includeEmpty ?? false;
+  const emptyOnly = options.emptyOnly ?? false;
   const limit = options.limit ?? 50;
   const results: SearchHit[] = [];
 
@@ -28,6 +34,8 @@ export function searchCategories(
     const explicitlyHidden = hidden.has(category.id);
     const ancestorHidden = isAncestorHidden(category.id, hidden);
     if (!includeHidden && (explicitlyHidden || ancestorHidden)) continue;
+    if (emptyOnly && !empty.has(category.id)) continue;
+    if (!includeEmpty && empty.has(category.id)) continue;
 
     let reason: SearchHit["reason"] | null = null;
     if (category.code.includes(needle.replace(/\s/g, ""))) reason = "code";

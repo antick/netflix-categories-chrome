@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { parseHTML } from "linkedom";
 import {
   findNetflixNavigationAnchor,
+  hasCurrentHeaderControl,
   hasInjectedButton,
+  hideForeignCategoryLabels,
   isNavLabel,
   normalizeLabel,
   placeCategoriesButton,
@@ -128,5 +130,20 @@ describe("netflix DOM adapter", () => {
     removeInjectedHeaderUi(doc);
     expect(hasInjectedButton(doc)).toBe(false);
     expect(doc.querySelector("netflix-categories-menu")).toBeNull();
+  });
+
+  test("hides a foreign Categories label without touching our control", () => {
+    const doc = parse(`
+      <div class="header-row">
+        <span>Categories</span>
+        <div data-nc-categories-button="true"><button>Hidden Categories</button></div>
+        <button>Search</button>
+      </div>
+    `);
+    hideForeignCategoryLabels(doc);
+    const foreign = doc.querySelector("[data-nc-foreign-categories]");
+    expect(foreign?.textContent?.trim()).toBe("Categories");
+    expect((foreign as HTMLElement).style.display).toBe("none");
+    expect(hasCurrentHeaderControl(doc)).toBe(true);
   });
 });

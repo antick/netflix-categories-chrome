@@ -11,7 +11,7 @@ Category loading, flattening, search, Favorites, Hidden, Recent, settings, Netfl
 
 ### Requirement: Preferences SHALL persist locally with a versioned schema
 
-The extension SHALL store preferences in local extension storage using category IDs, not names. The model SHALL include `schemaVersion`, `favorites`, `hiddenCategories`, `recentCategories`, `experimentalHeaderMenuEnabled`, `experimentalHeaderMenuNoticeDismissed`, `openBehavior` of `"reuse-current-tab"` | `"new-tab"`, and `theme` of `"light"` | `"dark"` (default dark). A small schema-version migration strategy SHALL exist so future shape changes are possible without over-engineering.
+The extension SHALL store preferences in local extension storage using category IDs, not names. The model SHALL include `schemaVersion`, `favorites`, `hiddenCategories`, `recentCategories`, `emptyCategories`, `experimentalHeaderMenuEnabled`, `experimentalHeaderMenuNoticeDismissed`, `openBehavior` of `"reuse-current-tab"` | `"new-tab"`, and `theme` of `"light"` | `"dark"` (default dark). A small schema-version migration strategy SHALL exist so future shape changes are possible without over-engineering. Missing `emptyCategories` SHALL migrate to `[]`.
 
 #### Scenario: Preferences survive popup close
 
@@ -61,7 +61,7 @@ Recent SHALL record only categories opened through this extension, MUST NOT read
 
 ### Requirement: Search SHALL match names and codes locally
 
-Search SHALL be case-insensitive, trimmed, partial-matching, and MUST match category names, child names, and genre codes with no network request. Child results SHALL include parent context. Keyboard navigation SHALL support Up/Down to select, Enter to open, and Escape to clear. Default search SHALL exclude hidden categories and SHALL provide an Include hidden option. Hidden results SHALL be visually marked. A fuzzy-search library MUST NOT be added unless standard matching is insufficient.
+Search SHALL be case-insensitive, trimmed, partial-matching, and MUST match category names, child names, and genre codes with no network request. Child results SHALL include parent context. Keyboard navigation SHALL support Up/Down to select, Enter to open, and Escape to clear. Default search SHALL exclude hidden categories and SHALL provide an Include hidden option. Default search SHALL also exclude categories marked empty unless the Empty tab is active. Hidden results SHALL be visually marked. A fuzzy-search library MUST NOT be added unless standard matching is insufficient.
 
 #### Scenario: Code search finds a child
 
