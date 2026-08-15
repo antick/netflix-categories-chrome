@@ -23,3 +23,5 @@ See `docs/CATEGORY_DATA.md`. Do not scrape Netflix accounts or private APIs.
 ## Specs
 
 Product behavior lives in `openspec/`. Use `/opsx:propose` for requirement changes.
+
+Chrome Web Store listing copy, permission justifications, and reviewer notes: `docs/CHROME_WEB_STORE_SUBMISSION.md`. There is no live store listing yet.
