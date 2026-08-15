@@ -1,0 +1,63 @@
+:host {
+  all: initial;
+  pointer-events: none;
+  font-family:
+    "Figtree Variable", Figtree, ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+}
+
+.nc-shell {
+  pointer-events: auto;
+  position: fixed;
+  z-index: 2147483646;
+  top: 68px;
+  right: 16px;
+  left: auto;
+  width: min(440px, calc(100vw - 24px));
+}
+
+.nc-mega[data-theme="dark"] {
+  color-scheme: dark;
+  --color-ink: #2b2630;
+  --color-ink-soft: #37323e;
+  --color-panel: #433d4a;
+  --color-line: #5e5668;
+  --color-muted: #cfc6d6;
+  --color-text: #f6f1f8;
+  --color-accent: #e50914;
+  --color-accent-soft: #ff8088;
+}
+
+.nc-mega[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: #f3eee6;
+  --color-ink-soft: #fffaf3;
+  --color-panel: #ffffff;
+  --color-line: #e2d6c8;
+  --color-muted: #6d635b;
+  --color-text: #1d1916;
+  --color-accent: #e50914;
+  --color-accent-soft: #be123c;
+}
+
+.nc-mega {
+  display: flex;
+  flex-direction: column;
+  max-height: min(72vh, 640px);
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: var(--color-ink);
+  color: var(--color-text);
+  box-shadow: 0 24px 60px rgba(40, 32, 28, 0.35);
+}
+
+.nc-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+  color: var(--color-text);
+}

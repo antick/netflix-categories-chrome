@@ -1,0 +1,80 @@
+@import "@fontsource-variable/figtree";
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    "Figtree Variable", Figtree, ui-sans-serif, system-ui, sans-serif;
+}
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-ink: #2b2630;
+  --color-ink-soft: #37323e;
+  --color-panel: #433d4a;
+  --color-line: #5e5668;
+  --color-muted: #cfc6d6;
+  --color-text: #f6f1f8;
+  --color-accent: #e50914;
+  --color-accent-soft: #ff8088;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: #f3eee6;
+  --color-ink-soft: #fffaf3;
+  --color-panel: #ffffff;
+  --color-line: #e2d6c8;
+  --color-muted: #6d635b;
+  --color-text: #1d1916;
+  --color-accent: #e50914;
+  --color-accent-soft: #be123c;
+}
+
+html {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+body {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+button,
+[type="button"],
+[type="reset"] {
+  cursor: pointer;
+}
+
+html[data-surface="popup"],
+html[data-surface="popup"] body,
+html[data-surface="popup"] #root {
+  width: 440px;
+  height: 620px;
+  overflow: hidden;
+}
+
+html[data-surface="options"] body,
+html[data-surface="options"] #root {
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

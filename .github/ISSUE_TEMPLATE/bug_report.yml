@@ -1,0 +1,32 @@
+name: Bug report
+description: Report a problem with the extension
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report an issue. This project is unofficial and not affiliated with Netflix.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Steps to reproduce, expected result, and actual result.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Extension version
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Popup
+        - Search
+        - Category data
+        - Experimental Netflix header
+        - Options
+        - Other
+    validations:
+      required: true

@@ -1,0 +1,35 @@
+schema: spec-driven
+
+context: |
+  Product: Netflix Categories — unofficial open-source Chrome extension
+  Repository: antick/netflix-categories-chrome
+  License: MIT (keep existing LICENSE copyright 2026 Pankaj)
+
+  Stack: Bun, WXT, Chrome Manifest V3, React, TypeScript, Tailwind CSS, Biome, Lucide React
+  Package manager: Bun only (commit bun.lock; no npm/pnpm/yarn lockfiles)
+  No ESLint, Prettier, Redux, backend, analytics, telemetry, or remote executable code
+
+  Category data is researched from public sources, bundled as static JSON, never fetched at runtime.
+  Do not reverse-engineer Netflix private APIs, scrape account data, or use cookies/credentials.
+
+  Two UIs share one domain layer: Chrome popup (primary) and optional experimental Netflix header mega menu (OFF by default).
+  Do not commit unless the user explicitly asks.
+  Do not declare Netflix affiliation. Do not use Netflix's official N in branding.
+
+  Implementation must not leave placeholder data, TODOs for required work, or incomplete store-prep docs.
+
+rules:
+  proposal:
+    - Keep Why/What faithful to PLAN.md product intent
+    - List every capability that will have a spec file
+  specs:
+    - Use SHALL/MUST requirement language
+    - Cover both popup and experimental header where a capability is shared
+    - Do not invent backend or remote dataset fetching
+  design:
+    - Prefer current WXT conventions over any outdated directory sketch
+    - Keep permissions minimal; optional Netflix host + scripting only after opt-in
+  tasks:
+    - Follow PLAN.md implementation order
+    - Include data research, validation, tests, CI, docs, build, and ZIP inspection
+    - Stop before logged-in Netflix header testing so the owner can log in

@@ -1,0 +1,81 @@
+import { useEffect, useRef } from "react";
+import { CategoryBrowser } from "../../components/CategoryBrowser";
+import type { ExtensionPreferences } from "../../lib/types";
+
+interface MegaMenuProps {
+  prefs: ExtensionPreferences;
+  open: boolean;
+  onClose: () => void;
+  onFavorite: (id: string) => void;
+  onHide: (id: string) => void;
+  onUnhide: (id: string) => void;
+  onRestoreHidden: () => void;
+  onClearRecent: () => void;
+  onOpened: (id: string) => void;
+}
+
+export function MegaMenu({
+  prefs,
+  open,
+  onClose,
+  onFavorite,
+  onHide,
+  onUnhide,
+  onRestoreHidden,
+  onClearRecent,
+  onOpened,
+}: MegaMenuProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    const onClick = (event: MouseEvent) => {
+      const path = event.composedPath();
+      if (path.includes(panelRef.current as EventTarget)) return;
+      if (
+        (event.target as HTMLElement | null)?.closest?.(
+          "[data-nc-categories-button]",
+        )
+      )
+        return;
+      onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onClick);
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="nc-mega"
+      data-theme={prefs.theme}
+      ref={panelRef}
+      role="dialog"
+      aria-label="Hidden categories"
+    >
+      <div className="nc-body">
+        <CategoryBrowser
+          prefs={prefs}
+          compact
+          onFavorite={onFavorite}
+          onHide={onHide}
+          onUnhide={onUnhide}
+          onRestoreHidden={onRestoreHidden}
+          onClearRecent={onClearRecent}
+          onOpened={async (id) => {
+            await onOpened(id);
+            onClose();
+          }}
+        />
+      </div>
+    </div>
+  );
+}
