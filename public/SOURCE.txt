@@ -1,0 +1,15 @@
+Categories for Netflix — Unofficial
+Copyright (c) 2026 Pankaj
+SPDX-License-Identifier: GPL-3.0-only
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3.
+It is distributed without any warranty; see LICENSE.txt.
+
+Corresponding source and build instructions:
+https://github.com/antick/netflix-categories-chrome
+See the release matching the version in manifest.json.
+Maintainers must publish that exact source and lockfile with each release.
+
+Third-party components retain their licenses in THIRD_PARTY_NOTICES.txt.
+Netflix is a third-party trademark; no affiliation or endorsement is claimed.

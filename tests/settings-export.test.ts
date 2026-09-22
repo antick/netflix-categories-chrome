@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { getAllCategories } from "../lib/categories";
 import { DEFAULT_PREFERENCES } from "../lib/preferences";
+import { MAX_SETTINGS_IMPORT_BYTES } from "../lib/release";
 import {
   buildSettingsExport,
   parseSettingsImport,
@@ -51,6 +52,26 @@ describe("settings export", () => {
       "settings file",
     );
     expect(() => parseSettingsImport(null)).toThrow("settings file");
+  });
+
+  test("rejects unsupported versions, array preferences, and oversized files", () => {
+    expect(() =>
+      parseSettingsImport({
+        kind: SETTINGS_EXPORT_KIND,
+        exportVersion: 99,
+        preferences: prefs,
+      }),
+    ).toThrow("version");
+    expect(() =>
+      parseSettingsImport({
+        kind: SETTINGS_EXPORT_KIND,
+        exportVersion: 1,
+        preferences: [],
+      }),
+    ).toThrow("preferences");
+    expect(() =>
+      parseSettingsImportText(" ".repeat(MAX_SETTINGS_IMPORT_BYTES + 1)),
+    ).toThrow("too large");
   });
 
   test("names the download with the date", () => {

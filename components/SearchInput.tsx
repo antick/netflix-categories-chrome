@@ -24,6 +24,7 @@ export function SearchInput({
       <input
         id={id}
         type="search"
+        aria-label="Search categories or codes"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         onKeyDown={onKeyDown}

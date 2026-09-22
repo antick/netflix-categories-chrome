@@ -4,7 +4,6 @@ import {
   findNetflixNavigationAnchor,
   hasCurrentHeaderControl,
   hasInjectedButton,
-  hideForeignCategoryLabels,
   isNavLabel,
   normalizeLabel,
   placeCategoriesButton,
@@ -132,7 +131,7 @@ describe("netflix DOM adapter", () => {
     expect(doc.querySelector("netflix-categories-menu")).toBeNull();
   });
 
-  test("hides a foreign Categories label without touching our control", () => {
+  test("cleanup leaves foreign Categories controls untouched", () => {
     const doc = parse(`
       <div class="header-row">
         <span>Categories</span>
@@ -140,10 +139,11 @@ describe("netflix DOM adapter", () => {
         <button>Search</button>
       </div>
     `);
-    hideForeignCategoryLabels(doc);
-    const foreign = doc.querySelector("[data-nc-foreign-categories]");
-    expect(foreign?.textContent?.trim()).toBe("Categories");
-    expect((foreign as HTMLElement).style.display).toBe("none");
     expect(hasCurrentHeaderControl(doc)).toBe(true);
+    removeInjectedHeaderUi(doc);
+    const foreign = doc.querySelector("span");
+    expect(foreign?.textContent?.trim()).toBe("Categories");
+    expect((foreign as HTMLElement).style.display).not.toBe("none");
+    expect(hasCurrentHeaderControl(doc)).toBe(false);
   });
 });

@@ -48,8 +48,18 @@ export function CategoryRow({
     const onPointer = (event: MouseEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
     };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuRef.current?.querySelector("button")?.focus();
+      }
+    };
     document.addEventListener("mousedown", onPointer);
-    return () => document.removeEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [menuOpen]);
 
   const copy = async (value: string) => {
@@ -155,7 +165,6 @@ export function CategoryRow({
         {menuOpen ? (
           <div
             id={menuId}
-            role="menu"
             className="absolute top-8 right-0 z-20 min-w-40 rounded-lg border border-[var(--color-line)] bg-[var(--color-ink-soft)] py-1 shadow-xl"
           >
             {isHidden && onUnhide ? (
@@ -202,7 +211,6 @@ function MenuItem({
   return (
     <button
       type="button"
-      role="menuitem"
       onClick={onClick}
       className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-sans text-sm text-[var(--color-text)] hover:bg-[var(--color-panel)]"
     >

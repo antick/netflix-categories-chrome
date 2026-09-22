@@ -1,3 +1,4 @@
+import { PAGE_INTEGRATION_ENABLED } from "./release";
 import type {
   ExtensionPreferences,
   OpenBehavior,
@@ -46,10 +47,10 @@ export function migratePreferences(raw: unknown): ExtensionPreferences {
     favorites: uniqueIds(input.favorites),
     hiddenCategories: uniqueIds(input.hiddenCategories),
     recentCategories: uniqueIds(input.recentCategories).slice(0, RECENT_LIMIT),
-    experimentalHeaderMenuEnabled: Boolean(input.experimentalHeaderMenuEnabled),
-    experimentalHeaderMenuNoticeDismissed: Boolean(
-      input.experimentalHeaderMenuNoticeDismissed,
-    ),
+    experimentalHeaderMenuEnabled:
+      PAGE_INTEGRATION_ENABLED && input.experimentalHeaderMenuEnabled === true,
+    experimentalHeaderMenuNoticeDismissed:
+      input.experimentalHeaderMenuNoticeDismissed === true,
     openBehavior,
     theme,
     emptyCategories: uniqueIds(input.emptyCategories),

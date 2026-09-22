@@ -13,8 +13,8 @@ import {
 } from "./preferences";
 import {
   loadPreferences,
-  savePreferences,
   subscribeToPreferences,
+  updatePreferences,
 } from "./storage";
 import type {
   ExtensionPreferences,
@@ -42,19 +42,21 @@ export function usePreferences() {
     };
   }, []);
 
-  const update = useCallback(async (next: ExtensionPreferences) => {
-    setPrefs(next);
-    await savePreferences(next);
-  }, []);
-
   const patch = useCallback(
     async (
       mutator: (current: ExtensionPreferences) => ExtensionPreferences,
     ) => {
-      const current = prefs ?? (await loadPreferences());
-      await update(mutator(current));
+      try {
+        const next = await updatePreferences(mutator);
+        setPrefs(next);
+        setError(null);
+        return true;
+      } catch {
+        setError("Could not save your changes. Please try again.");
+        return false;
+      }
     },
-    [prefs, update],
+    [],
   );
 
   return {

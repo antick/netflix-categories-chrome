@@ -13,7 +13,7 @@ interface MegaMenuProps {
   onUnmarkEmpty: (id: string) => void;
   onClearEmpty: () => void;
   onClearRecent: () => void;
-  onOpened: (id: string) => void;
+  onOpened: (id: string) => Promise<unknown>;
 }
 
 export function MegaMenu({

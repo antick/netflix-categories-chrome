@@ -6,6 +6,7 @@ import {
 } from "../lib/categories";
 import { searchCategories } from "../lib/category-search";
 import { openNetflixCategory } from "../lib/navigation";
+import { PAGE_INTEGRATION_ENABLED } from "../lib/release";
 import type {
   ExtensionPreferences,
   FlatCategory,
@@ -30,7 +31,7 @@ interface CategoryBrowserProps {
   onUnmarkEmpty: (id: string) => void;
   onClearEmpty: () => void;
   onClearRecent: () => void;
-  onOpened: (id: string) => void;
+  onOpened: (id: string) => Promise<unknown>;
   compact?: boolean;
 }
 
@@ -116,8 +117,9 @@ export function CategoryBrowser({
   const open: OpenCategoryFn = async (id, behavior) => {
     const category = getCategoryById(id);
     if (!category) return;
-    await openNetflixCategory(category.code, behavior);
+    // Navigation can close the popup, so finish saving the selection first.
     await onOpened(id);
+    await openNetflixCategory(category.code, behavior);
   };
 
   const onSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -172,8 +174,9 @@ export function CategoryBrowser({
       </label>
       {compact ? null : (
         <p className="mt-1 px-4 text-[11px] leading-4 text-[var(--color-muted)]">
-          Empty Netflix pages are regional. Opening one moves it to Empty.
-          Restore it if titles show up later.
+          {PAGE_INTEGRATION_ENABLED
+            ? "Automatic empty-page detection requires the optional header integration."
+            : "Category availability varies by region. This extension does not inspect Netflix pages."}
         </p>
       )}
       <div className="mt-2 min-h-0 flex-1 overflow-y-auto">

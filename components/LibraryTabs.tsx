@@ -32,21 +32,21 @@ interface LibraryTabsProps {
 
 export function LibraryTabs({ value, onChange, counts }: LibraryTabsProps) {
   return (
-    <div
-      role="tablist"
+    <fieldset
       aria-label="Category lists"
       className="mx-3 mt-3 flex gap-1 rounded-xl bg-[var(--color-panel)] p-1"
     >
       {LIBRARY_TABS.map((tab) => {
+        if (tab === "empty" && !PAGE_INTEGRATION_ENABLED && !counts?.empty)
+          return null;
         const selected = value === tab;
         const count = tab === "all" ? undefined : counts?.[tab];
         return (
           <button
             key={tab}
             type="button"
-            role="tab"
             aria-label={ARIA_LABELS[tab]}
-            aria-selected={selected}
+            aria-pressed={selected}
             onClick={() => onChange(tab)}
             className={`flex flex-1 items-center justify-center gap-0.5 rounded-lg px-1 py-1.5 text-[10px] font-semibold tracking-wide uppercase focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none ${
               selected
@@ -65,6 +65,8 @@ export function LibraryTabs({ value, onChange, counts }: LibraryTabsProps) {
           </button>
         );
       })}
-    </div>
+    </fieldset>
   );
 }
+
+import { PAGE_INTEGRATION_ENABLED } from "../lib/release";

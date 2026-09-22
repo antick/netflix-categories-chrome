@@ -282,20 +282,6 @@ export function hasCurrentHeaderControl(root: ParentNode = document): boolean {
   return headerControlLabel(host) === HEADER_CONTROL_LABEL;
 }
 
-export function hideForeignCategoryLabels(root: ParentNode = document): void {
-  const nodes = root.querySelectorAll("a, button, span, li, div");
-  for (const node of nodes) {
-    if (!isHtmlElement(node)) continue;
-    if (node.closest("[data-nc-categories-button]")) continue;
-    if (node.hasAttribute("data-nc-categories-button")) continue;
-    const text = node.textContent?.replace(/\s+/g, " ").trim();
-    if (text !== "Categories") continue;
-    if ((node.textContent?.length ?? 0) > 24) continue;
-    node.setAttribute("data-nc-foreign-categories", "true");
-    node.style.display = "none";
-  }
-}
-
 export function removeInjectedButtons(root: ParentNode = document): void {
   for (const node of root.querySelectorAll("[data-nc-categories-button]")) {
     node.remove();

@@ -1,5 +1,6 @@
 import { getCategoryById } from "./categories";
 import { migratePreferences } from "./preferences";
+import { MAX_SETTINGS_IMPORT_BYTES } from "./release";
 import type { ExtensionPreferences } from "./types";
 
 export const SETTINGS_EXPORT_KIND = "netflix-categories-settings";
@@ -48,7 +49,7 @@ export function settingsExportFilename(now = new Date()): string {
 }
 
 export function parseSettingsImport(raw: unknown): ExtensionPreferences {
-  if (!raw || typeof raw !== "object") {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw new Error("Not a Netflix Categories settings file.");
   }
   const data = raw as Record<string, unknown>;
@@ -57,7 +58,14 @@ export function parseSettingsImport(raw: unknown): ExtensionPreferences {
     if (data.kind !== SETTINGS_EXPORT_KIND) {
       throw new Error("Not a Netflix Categories settings file.");
     }
-    if (!data.preferences || typeof data.preferences !== "object") {
+    if (data.exportVersion !== SETTINGS_EXPORT_VERSION) {
+      throw new Error("Unsupported settings export version.");
+    }
+    if (
+      !data.preferences ||
+      typeof data.preferences !== "object" ||
+      Array.isArray(data.preferences)
+    ) {
       throw new Error("Settings file is missing preferences.");
     }
     return sanitizePreferences(data.preferences);
@@ -76,6 +84,9 @@ export function parseSettingsImport(raw: unknown): ExtensionPreferences {
 }
 
 export function parseSettingsImportText(text: string): ExtensionPreferences {
+  if (new TextEncoder().encode(text).length > MAX_SETTINGS_IMPORT_BYTES) {
+    throw new Error("Settings file is too large (maximum 1 MB).");
+  }
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);

@@ -114,6 +114,7 @@ export async function injectIntoOpenNetflixTabs(): Promise<void> {
 }
 
 export async function enableExperimentalHeader(): Promise<boolean> {
+  if (!PAGE_INTEGRATION_ENABLED) return false;
   const granted = await requestNetflixPermission();
   if (!granted) return false;
   await registerNetflixContentScript();
@@ -121,6 +122,9 @@ export async function enableExperimentalHeader(): Promise<boolean> {
 }
 
 export async function disableExperimentalHeader(): Promise<void> {
+  if (!PAGE_INTEGRATION_ENABLED) return;
   await unregisterNetflixContentScript();
   await removeNetflixPermission();
 }
+
+import { PAGE_INTEGRATION_ENABLED } from "./release";

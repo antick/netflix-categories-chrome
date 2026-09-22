@@ -71,7 +71,7 @@ export function EmptySection({
       ) : (
         <EmptyState
           title="No empty categories yet"
-          body="Open a genre that has no titles in your country and it moves here."
+          body="No saved empty categories. Automatic page detection is unavailable in the store release."
         />
       )}
     </section>

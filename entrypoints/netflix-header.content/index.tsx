@@ -13,13 +13,13 @@ import {
   HEADER_EXTENSION_MARK,
   hasCurrentHeaderControl,
   hasInjectedButton,
-  hideForeignCategoryLabels,
   placeCategoriesButton,
   removeInjectedButtons,
   removeInjectedHeaderUi,
   shouldMountOnPath,
 } from "../../lib/netflix-dom";
 import { markEmpty, unmarkEmpty } from "../../lib/preferences";
+import { PAGE_INTEGRATION_ENABLED } from "../../lib/release";
 import {
   loadPreferences,
   savePreferences,
@@ -48,7 +48,7 @@ function MenuRoot({ onClose, open }: { open: boolean; onClose: () => void }) {
       onUnmarkEmpty={(id) => void prefsApi.unmarkEmpty(id)}
       onClearEmpty={() => void prefsApi.clearEmpty()}
       onClearRecent={() => void prefsApi.clearRecent()}
-      onOpened={(id) => void prefsApi.rememberRecent(id)}
+      onOpened={prefsApi.rememberRecent}
     />
   );
 }
@@ -59,8 +59,8 @@ export default defineContentScript({
   cssInjectionMode: "ui",
 
   async main(ctx) {
+    if (!PAGE_INTEGRATION_ENABLED) return;
     removeInjectedHeaderUi();
-    hideForeignCategoryLabels();
     document.documentElement.setAttribute(BOOTSTRAP_ATTR, SCRIPT_VERSION);
 
     let button: HTMLButtonElement | null = null;
@@ -200,7 +200,6 @@ export default defineContentScript({
           removeInjected();
           return;
         }
-        hideForeignCategoryLabels();
         if (!shouldMountOnPath(location.pathname)) {
           removeInjected();
           return;
@@ -290,6 +289,7 @@ export default defineContentScript({
       const status = classifyGenrePage(document, location.pathname);
       if (status === "loading") return;
       const prefs = await loadPreferences();
+      if (!prefs.experimentalHeaderMenuEnabled) return;
       const next =
         status === "empty"
           ? markEmpty(prefs, category.id)

@@ -3,7 +3,7 @@ description: Report a problem with the extension
 body:
   - type: markdown
     attributes:
-      value: Thanks for taking the time to report an issue. This project is unofficial and not affiliated with Netflix.
+      value: This project is unofficial and not affiliated with Netflix. Do not include credentials, cookies, personal settings exports, or account screenshots.
   - type: textarea
     id: what-happened
     attributes:
@@ -25,7 +25,7 @@ body:
         - Popup
         - Search
         - Category data
-        - Experimental Netflix header
+        - Retained experimental source (not in store build)
         - Options
         - Other
     validations:

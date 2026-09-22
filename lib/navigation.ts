@@ -1,4 +1,4 @@
-import { getNetflixCategoryUrl, isNetflixTabUrl } from "./netflix-url";
+import { getNetflixCategoryUrl } from "./netflix-url";
 import type { OpenBehavior } from "./types";
 
 export function shouldUseInPageNavigation(
@@ -23,37 +23,16 @@ export async function openNetflixCategory(
   }
 
   try {
-    const [active] = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-
     if (behavior === "new-tab") {
       await browser.tabs.create({ url });
       return;
     }
 
-    if (active?.id && isNetflixTabUrl(active.url)) {
-      await browser.tabs.update(active.id, { url });
-      return;
-    }
-
-    const [existing] = await browser.tabs.query({
-      url: "*://www.netflix.com/*",
+    const [active] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
     });
-    if (existing?.id) {
-      await browser.tabs.update(existing.id, { url, active: true });
-      if (existing.windowId)
-        await browser.windows.update(existing.windowId, { focused: true });
-      return;
-    }
-
-    if (
-      active?.id &&
-      active.url &&
-      !active.url.startsWith("chrome://") &&
-      !active.url.startsWith("edge://")
-    ) {
+    if (active?.id != null) {
       await browser.tabs.update(active.id, { url });
       return;
     }

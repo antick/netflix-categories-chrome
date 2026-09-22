@@ -30,3 +30,13 @@ web-ext.config.ts
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+
+# Local secrets and signing material
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crx

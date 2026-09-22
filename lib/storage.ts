@@ -1,35 +1,31 @@
-import {
-  DEFAULT_PREFERENCES,
-  migratePreferences,
-  PREFERENCES_KEY,
-} from "./preferences";
+import { migratePreferences, PREFERENCES_KEY } from "./preferences";
 import type { ExtensionPreferences } from "./types";
 
-function hasStorage(): boolean {
-  return typeof browser !== "undefined" && Boolean(browser.storage?.local);
-}
-
 export async function loadPreferences(): Promise<ExtensionPreferences> {
-  try {
-    if (!hasStorage()) return { ...DEFAULT_PREFERENCES };
-    const stored = await browser.storage.local.get(PREFERENCES_KEY);
-    return migratePreferences(stored[PREFERENCES_KEY]);
-  } catch (error) {
-    console.error("Failed to load preferences", error);
-    return { ...DEFAULT_PREFERENCES };
-  }
+  const stored = await browser.storage.local.get(PREFERENCES_KEY);
+  return migratePreferences(stored[PREFERENCES_KEY]);
 }
 
 export async function savePreferences(
   prefs: ExtensionPreferences,
 ): Promise<void> {
   try {
-    if (!hasStorage()) return;
     await browser.storage.local.set({ [PREFERENCES_KEY]: prefs });
   } catch (error) {
     console.error("Failed to save preferences", error);
     throw error;
   }
+}
+
+export async function updatePreferences(
+  mutator: (current: ExtensionPreferences) => ExtensionPreferences,
+): Promise<ExtensionPreferences> {
+  // Popup and Options share an extension origin, so this lock prevents lost edits.
+  return navigator.locks.request(PREFERENCES_KEY, async () => {
+    const next = migratePreferences(mutator(await loadPreferences()));
+    await savePreferences(next);
+    return next;
+  });
 }
 
 export function subscribeToPreferences(

@@ -1,129 +1,65 @@
-# Netflix Categories
+# Categories for Netflix — Unofficial
 
-Unofficial, open-source Chrome extension for browsing Netflix's hidden categories and secret genre codes.
+An independent, open-source Chrome extension for searching public Netflix genre codes and keeping local category lists. Not affiliated with, endorsed by, or sponsored by Netflix.
 
-![Popup](docs/screenshots/popup.png)
+## Release status
 
-![Search](docs/screenshots/search.png)
-
-![Favorites](docs/screenshots/favorites.png)
-
-![Options](docs/screenshots/options.png)
-
-![Mega menu](docs/screenshots/mega-menu.png)
-
-Not affiliated with, endorsed by, or sponsored by Netflix. Netflix is a trademark of its respective owner.
+**Not yet published in the Chrome Web Store.** See the [release review](docs/RELEASE_REVIEW.md) for remaining store preparation and the category-source review note, and the [submission guide](docs/CHROME_WEB_STORE_SUBMISSION.md) for publishing steps.
 
 ## Features
 
-- **Search the bundled catalog** by category name or numeric genre code. No network fetch; the list ships inside the extension.
-- **Open in this tab or a new tab** from each row (window icon / arrow-up-right icon). The name expands groups; it does not navigate.
-- **Favorites** pin the codes you actually use. They get their own tab in the popup and in the Netflix menu.
-- **Hidden** lets you remove noise from All. Restore one row or restore all from Options.
-- **Recent** remembers the last 10 categories you opened through this extension (not your Netflix watch history).
-- **Empty** keeps regional dead ends out of your way. Netflix catalog is per country, so hundreds of public codes show "No titles found" for you. Open one of those pages and after a couple of seconds it **moves to the Empty tab** and disappears from All, Fav, Recent, and Hidden. Restore it if titles show up later. This is local marking, not a scrape of Netflix's catalog.
-- **Export / import** your whole local state (favorites, hidden, empty, recent, theme, and other settings) as a JSON file from Options. Nothing is uploaded.
-- **Light and dark themes** for the popup, Options, and the Netflix menu.
-- **Optional Hidden Categories control** in Netflix's header (off by default). Same search and lists as the popup. Needs Netflix site permission only if you turn it on.
-- **Private by design:** no account, cookies, analytics, or remote category API.
+- Search the bundled catalog by name or numeric code, without a remote category API.
+- Open a category in the current tab or a new tab; copy its code or URL.
+- Save favorites, hide categories, and view your last 10 extension selections.
+- Export/import local settings as JSON and reset or restore lists in Options.
+- Switch between light and dark themes.
+- Restore empty-category markers from earlier settings exports. New empty-page detection is disabled.
 
-## Installation
+The store build uses only the `storage` permission. It does not read Netflix pages, cookies, credentials, viewing history, or account information. Opening a link visits Netflix normally and still requires whatever subscription and regional access Netflix ordinarily requires. This extension does not unlock restricted titles or bypass payment, ads, DRM, or region limits.
 
-There is **no Chrome Web Store listing yet**. Use the unpacked production build:
+## Install and develop
 
-1. `bun run build`
-2. Open `chrome://extensions`
-3. Enable Developer Mode
-4. Click **Load unpacked**
-5. Select `.output/chrome-mv3`
-
-To publish later, follow **[Chrome Web Store submission](docs/CHROME_WEB_STORE_SUBMISSION.md)** (listing copy, permissions, reviewer notes, ZIP checks). That doc is not linked from a live store page; it is the maintainer checklist for when you submit.
-
-## Local development
-
-Required Bun version is in `package.json` (`packageManager`).
+Use Bun **1.4.2**, pinned in `package.json`. WXT's build tools also require Node.js 22 or newer.
 
 ```bash
 git clone https://github.com/antick/netflix-categories-chrome.git
 cd netflix-categories-chrome
-bun install
-bun run dev
+bun install --frozen-lockfile
+bun run build
 ```
 
-WXT starts a development browser with the extension loaded. Edit popup/options/content scripts and they reload.
-
-### Commands
+Open `chrome://extensions`, enable Developer mode, select **Load unpacked**, and choose `.output/chrome-mv3`. Pin the extension to the toolbar. For development, `bun run dev` starts WXT's development browser.
 
 ```bash
-bun run dev
-bun run build
-bun run zip
+bun run validate:data
 bun run check
-bun run check:fix
-bun run format
 bun run typecheck
 bun run test
-bun run validate:data
+bun run build
+bun run validate:release
+bun run zip
 ```
 
-### Testing
+`bun run check:fix` applies safe Biome fixes; `bun run format` formats files. CI runs data validation, formatting/lint checks, type checking, tests, the production build, and the release permission check.
 
-```bash
-bun run test
-```
+## Retained experimental integration
 
-Manual checks: load the unpacked build, open the popup, search a name and a code, favorite/hide a category, open an empty genre and confirm it moves to Empty, export/import from Options.
+The injected Netflix header menu, its background registration code, and empty-page detection remain in the source for future consideration. `PAGE_INTEGRATION_ENABLED` in `lib/release.ts` is **false**. WXT excludes those entrypoints from the package, and the manifest includes no host, scripting, or active-tab permission. There is no enable control in the release UI; old stored preferences and imports cannot enable it.
 
-### Experimental Netflix header
+Do not enable this for a store release without resolving Netflix's terms restrictions and repeating the security, permission, privacy, and store review. The current release validation intentionally fails if it is enabled. The experimental code is not certified for use merely because its unit tests pass. Historical images in `docs/screenshots/` show the earlier experimental UI and are not current store assets.
 
-1. Load the extension.
-2. Open the popup or Options.
-3. Enable **Hidden Categories in Netflix header** (or Try in the popup notice).
-4. Approve the Netflix site permission.
-5. Visit or hard-refresh Netflix while logged in.
-6. Confirm **Hidden Categories** in the top navigation, left of Search.
-7. Use the same All / Fav / Recent / Hidden / Empty lists as the popup.
-8. Disable the feature and confirm the header control goes away.
+## Data and privacy
 
-If Netflix's header cannot be found, the popup still works. This integration can break after Netflix UI updates.
+The catalog is bundled in `data/netflix-categories.json`. Availability varies by country and over time. See [what the data contains and where it came from](docs/CATEGORY_DATA.md), including the distinction between public category facts and potentially protected compilation material.
 
-If the header still shows a plain white **Categories** label jammed against Search, another Netflix secret-codes extension is injecting it. Disable that extension, then reload this one and hard-refresh Netflix.
+Preferences stay in local browser storage. Exports are ordinary unencrypted files on your device. Read the [privacy policy](PRIVACY.md) for data handling, deletion, and external links.
 
-## Updating category data
+## Contributing and security
 
-1. Research codes from public sources (prefer [Tudum](https://www.netflix.com/tudum/articles/netflix-secret-codes-guide)).
-2. Verify names and codes.
-3. Edit `data/netflix-categories.json`.
-4. Update `updatedAt`.
-5. Update [docs/CATEGORY_DATA.md](docs/CATEGORY_DATA.md) if sources change.
-6. Run `bun run validate:data`, `bun run test`, and `bun run build`.
-7. Open a PR.
-
-## Privacy
-
-This extension does not collect or transmit personal data. Favorites, hidden, empty, recent, and settings stay in local extension storage. Export writes a JSON file on your disk; import reads a file you choose. Neither leaves your machine.
-
-Optional Netflix permission is requested only if you enable the header menu. It is used to attach an extension-owned menu on `netflix.com` and to notice when a genre page you opened is empty. The extension does not read cookies, credentials, viewing history, or account data, and does not scrape titles.
-
-## Permissions
-
-- `storage` — Favorites, Hidden, Recent, Empty, settings
-- `activeTab` — open a category from a user click
-- optional `scripting` + `https://www.netflix.com/*` — header menu and empty-page detection only after you opt in
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Store listing and reviewer copy: [docs/CHROME_WEB_STORE_SUBMISSION.md](docs/CHROME_WEB_STORE_SUBMISSION.md).
-
-## Disclaimer
-
-Netflix Categories is an unofficial open-source project and is not affiliated with, endorsed by, or sponsored by Netflix.
-
-- Netflix is a trademark of its respective owner.
-- Category availability can vary by region.
-- Category codes can change.
-- Experimental header integration can break after Netflix UI updates.
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Never submit account cookies, credentials, private exports, or personal screenshots with an issue.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Copyright (c) 2026 Pankaj. Project code is licensed under **GPL-3.0-only**; see [LICENSE](LICENSE). Distributed derivatives must retain notices and provide corresponding source under GPLv3. Compliant commercial forks and competing store listings are allowed. Earlier MIT-licensed copies retain their original permissions.
+
+Third-party components and fonts retain their own licenses; see [THIRD_PARTY_NOTICES.txt](public/THIRD_PARTY_NOTICES.txt). The project license does not grant rights to Netflix trademarks or resolve third-party dataset rights. Use distinct branding for forks and do not imply endorsement.

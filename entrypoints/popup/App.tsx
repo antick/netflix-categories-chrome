@@ -4,6 +4,7 @@ import { CategoryBrowser } from "../../components/CategoryBrowser";
 import { ExperimentalNotice } from "../../components/ExperimentalNotice";
 import { ThemeToggle } from "../../components/ThemeToggle";
 import { enableExperimentalHeader } from "../../lib/permissions";
+import { PAGE_INTEGRATION_ENABLED } from "../../lib/release";
 import { applyTheme } from "../../lib/theme";
 import { usePreferences } from "../../lib/use-preferences";
 
@@ -54,7 +55,7 @@ export function App() {
             Netflix Categories
           </h1>
           <p className="mt-0.5 text-xs text-[var(--color-muted)]">
-            Hidden categories & genre codes
+            Unofficial · Hidden categories & genre codes
           </p>
         </div>
         <div className="flex items-center gap-1">
@@ -73,7 +74,8 @@ export function App() {
         </div>
       </header>
 
-      {!prefs.experimentalHeaderMenuNoticeDismissed &&
+      {PAGE_INTEGRATION_ENABLED &&
+      !prefs.experimentalHeaderMenuNoticeDismissed &&
       !prefs.experimentalHeaderMenuEnabled ? (
         <ExperimentalNotice
           onTry={() => void tryExperimental()}
@@ -92,8 +94,13 @@ export function App() {
         onUnmarkEmpty={(id) => void prefsApi.unmarkEmpty(id)}
         onClearEmpty={() => void prefsApi.clearEmpty()}
         onClearRecent={() => void prefsApi.clearRecent()}
-        onOpened={(id) => void prefsApi.rememberRecent(id)}
+        onOpened={prefsApi.rememberRecent}
       />
+      {prefsApi.error ? (
+        <p role="alert" className="px-4 py-2 text-sm">
+          {prefsApi.error}
+        </p>
+      ) : null}
     </div>
   );
 }

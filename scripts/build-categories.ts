@@ -7,7 +7,12 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-const SOURCE = "/tmp/streamable-netflix.txt";
+const SOURCE = process.argv[2];
+if (!SOURCE) {
+  throw new Error(
+    "Usage: bun scripts/build-categories.ts <licensed-source-table.txt>",
+  );
+}
 const OUT = join(import.meta.dir, "../data/netflix-categories.json");
 
 type Category = {

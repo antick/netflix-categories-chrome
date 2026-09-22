@@ -5,6 +5,12 @@ import {
   enableExperimentalHeader,
 } from "../../lib/permissions";
 import {
+  MAX_SETTINGS_IMPORT_BYTES,
+  PAGE_INTEGRATION_ENABLED,
+  PRIVACY_URL,
+  PROJECT_URL,
+} from "../../lib/release";
+import {
   parseSettingsImportText,
   settingsExportFilename,
   settingsExportToJson,
@@ -70,17 +76,20 @@ export function OptionsApp() {
     setBusy(true);
     setStatus(null);
     try {
+      if (file.size > MAX_SETTINGS_IMPORT_BYTES)
+        throw new Error("Settings file is too large (maximum 1 MB).");
       const imported = parseSettingsImportText(await file.text());
-      let experimental = imported.experimentalHeaderMenuEnabled;
-      if (experimental) {
-        experimental = await enableExperimentalHeader();
-      } else {
+      // An imported file never grants consent to inspect a website.
+      const experimental = false;
+      if (PAGE_INTEGRATION_ENABLED) {
         await disableExperimentalHeader();
       }
-      await prefsApi.replaceAll({
+      const saved = await prefsApi.replaceAll({
         ...imported,
         experimentalHeaderMenuEnabled: experimental,
       });
+      if (!saved)
+        throw new Error("Could not save imported settings. Please try again.");
       applyTheme(imported.theme);
       setStatus(
         experimental === imported.experimentalHeaderMenuEnabled
@@ -100,11 +109,11 @@ export function OptionsApp() {
     }
   };
 
-  const runDataAction = async (label: string, work: () => Promise<void>) => {
+  const runDataAction = async (label: string, work: () => Promise<boolean>) => {
     setBusy(true);
     setStatus(null);
     try {
-      await work();
+      if (!(await work())) throw new Error("Could not save preferences.");
       setStatus(label);
     } catch (error) {
       console.error(error);
@@ -120,7 +129,7 @@ export function OptionsApp() {
         Netflix Categories
       </h1>
       <p className="mt-1 text-sm text-[var(--color-muted)]">
-        Local settings only. Nothing is sent anywhere.
+        Settings stay in this browser. Opening a category visits Netflix.
       </p>
 
       <section className="mt-8 rounded-2xl border border-[var(--color-line)] bg-[var(--color-ink-soft)] p-5">
@@ -128,7 +137,7 @@ export function OptionsApp() {
           Appearance
         </h2>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
-          Light or dark for the popup, options, and Netflix menu.
+          Light or dark for the popup and options.
         </p>
         <div className="mt-4">
           <ThemeToggle
@@ -138,33 +147,37 @@ export function OptionsApp() {
         </div>
       </section>
 
-      <section className="mt-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-ink-soft)] p-5">
-        <h2 className="text-xs font-semibold tracking-[0.16em] text-[var(--color-accent-soft)] uppercase">
-          Experimental
-        </h2>
-        <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
-          Add a searchable Hidden Categories control to Netflix's top
-          navigation. Needs permission on netflix.com and can break when Netflix
-          restyles the header.
-        </p>
-        <label className="mt-4 flex items-center justify-between gap-3 text-sm">
-          <span className="font-medium">
-            Hidden Categories in Netflix header
-          </span>
-          <input
-            type="checkbox"
-            checked={prefs.experimentalHeaderMenuEnabled}
-            onChange={(event) => void toggleExperimental(event.target.checked)}
-            className="size-4 accent-[var(--color-accent)]"
-          />
-        </label>
-        {prefs.experimentalHeaderMenuEnabled ? (
-          <p className="mt-3 text-xs text-[var(--color-muted)]">
-            If Hidden Categories does not appear, refresh Netflix. The popup
-            still works if the header cannot attach.
+      {PAGE_INTEGRATION_ENABLED ? (
+        <section className="mt-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-ink-soft)] p-5">
+          <h2 className="text-xs font-semibold tracking-[0.16em] text-[var(--color-accent-soft)] uppercase">
+            Experimental
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
+            Add a searchable Hidden Categories control to Netflix's top
+            navigation. Needs permission on netflix.com and can break when
+            Netflix restyles the header.
           </p>
-        ) : null}
-      </section>
+          <label className="mt-4 flex items-center justify-between gap-3 text-sm">
+            <span className="font-medium">
+              Hidden Categories in Netflix header
+            </span>
+            <input
+              type="checkbox"
+              checked={prefs.experimentalHeaderMenuEnabled}
+              onChange={(event) =>
+                void toggleExperimental(event.target.checked)
+              }
+              className="size-4 accent-[var(--color-accent)]"
+            />
+          </label>
+          {prefs.experimentalHeaderMenuEnabled ? (
+            <p className="mt-3 text-xs text-[var(--color-muted)]">
+              If Hidden Categories does not appear, refresh Netflix. The popup
+              still works if the header cannot attach.
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="mt-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-ink-soft)] p-5">
         <h2 className="text-xs font-semibold tracking-[0.16em] text-[var(--color-muted)] uppercase">
@@ -276,8 +289,9 @@ export function OptionsApp() {
             className="w-full rounded-xl border border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 px-3 py-2.5 text-left text-sm font-medium text-[var(--color-accent-soft)] hover:border-[var(--color-accent)] disabled:opacity-60"
             onClick={() =>
               void runDataAction("All settings reset.", async () => {
-                await prefsApi.resetAll();
+                const saved = await prefsApi.resetAll();
                 await disableExperimentalHeader();
+                return saved;
               })
             }
           >
@@ -287,8 +301,39 @@ export function OptionsApp() {
       </section>
 
       {status ? (
-        <p className="mt-4 text-sm text-[var(--color-accent-soft)]">{status}</p>
+        <p
+          role="status"
+          className="mt-4 text-sm text-[var(--color-accent-soft)]"
+        >
+          {status}
+        </p>
       ) : null}
+      {prefsApi.error ? (
+        <p role="alert" className="mt-4 text-sm">
+          {prefsApi.error}
+        </p>
+      ) : null}
+      <footer className="mt-6 text-xs text-[var(--color-muted)]">
+        Unofficial; not affiliated with Netflix. GPLv3, without warranty.
+        <div className="mt-2 flex gap-4">
+          <a
+            href={PRIVACY_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            Privacy policy
+          </a>
+          <a
+            href={PROJECT_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            Source code and license
+          </a>
+        </div>
+      </footer>
     </main>
   );
 }
