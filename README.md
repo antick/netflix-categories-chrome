@@ -1,4 +1,4 @@
-# Categories for Netflix — Unofficial
+# Categories for Netflix (Unofficial)
 
 An independent, open-source Chrome extension for searching public Netflix genre codes and keeping local category lists. Not affiliated with, endorsed by, or sponsored by Netflix.
 

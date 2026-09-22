@@ -2,7 +2,7 @@
 
 Effective date: 2026-09-22
 
-This policy covers **Categories for Netflix — Unofficial**, maintained by Pankaj ([project and support](https://github.com/antick/netflix-categories-chrome)). It is independent of Netflix.
+This policy covers **Categories for Netflix (Unofficial)**, maintained by Pankaj ([project and support](https://github.com/antick/netflix-categories-chrome)). It is independent of Netflix.
 
 ## Information used
 

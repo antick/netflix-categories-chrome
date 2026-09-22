@@ -94,7 +94,7 @@ Google requires a privacy policy even for local-only user data. Sources: [privac
 
 ## 7. Listing copy
 
-**Name:** Categories for Netflix — Unofficial
+**Name:** Categories for Netflix (Unofficial)
 
 **Short description:** Search Netflix genre codes, save favorites, hide categories, and keep your lists locally. Unofficial; no site access.
 

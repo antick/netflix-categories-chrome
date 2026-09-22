@@ -4,7 +4,7 @@ The extension ships a static dataset at `data/netflix-categories.json`. Category
 
 ## What the data contains and the source question
 
-Here, ‘dataset’ means the bundled category names, numeric genre codes, internal IDs, and grouping—for example, Horror Movies → 8711. It contains no films, descriptions of films, Netflix accounts, or viewing histories.
+Here, ‘dataset’ means the bundled category names, numeric genre codes, internal IDs, and grouping, for example, Horror Movies → 8711. It contains no films, descriptions of films, Netflix accounts, or viewing histories.
 
 Under U.S. copyright guidance, facts and names are not protected by copyright; an original selection or arrangement of a compilation can be. See the [Copyright Office's explanation](https://www.copyright.gov/help/faq/faq-protect.html) and [compilation definition](https://www.copyright.gov/register/tx-compilations.html). The earlier review overstated the absence of an explicit source license as a definite publication blocker. It did not establish that this table contains protected material requiring permission.
 
@@ -16,11 +16,11 @@ Researched on **2026-08-15**.
 
 ### Primary sources
 
-- [Netflix Tudum: Netflix Secret Codes in 2025](https://www.netflix.com/tudum/articles/netflix-secret-codes-guide) — first-party explanations of genre URLs (`https://www.netflix.com/browse/genre/<code>`) and named collections with codes (90-Minute Movies, Cyberpunk, Twisted Christmas, and others). Featured Collections in the JSON come from this article.
+- [Netflix Tudum: Netflix Secret Codes in 2025](https://www.netflix.com/tudum/articles/netflix-secret-codes-guide): first-party explanations of genre URLs (`https://www.netflix.com/browse/genre/<code>`) and named collections with codes (90-Minute Movies, Cyberpunk, Twisted Christmas, and others). Featured Collections in the JSON come from this article.
 
 ### Secondary sources
 
-- [The Streamable: Complete List of Netflix Category Codes](https://thestreamable.com/news/the-complete-list-of-netflix-category-codes) — compiled public table of 3,000+ name/code pairs, itself attributed to What’s On Netflix’s public category library.
+- [The Streamable: Complete List of Netflix Category Codes](https://thestreamable.com/news/the-complete-list-of-netflix-category-codes): compiled public table of 3,000+ name/code pairs, itself attributed to What’s On Netflix’s public category library.
 - Cross-checks against widely repeated public genre IDs (for example Action & Adventure `1365`, Anime `7424`, Horror `8711`).
 
 ### What was excluded

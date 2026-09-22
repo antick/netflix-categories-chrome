@@ -1,6 +1,6 @@
 ## Why
 
-Netflix hides useful genre and category browse pages behind numeric codes that are hard to discover. This repository needs a complete, installable Chrome extension that ships real category data, a polished popup, and an optional in-Netflix header menu—without backends, telemetry, or placeholder content.
+Netflix hides useful genre and category browse pages behind numeric codes that are hard to discover. This repository needs a complete, installable Chrome extension that ships real category data, a polished popup, and an optional in-Netflix header menu without backends, telemetry, or placeholder content.
 
 ## What Changes
 

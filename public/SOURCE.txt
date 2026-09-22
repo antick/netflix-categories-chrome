@@ -1,4 +1,4 @@
-Categories for Netflix — Unofficial
+Categories for Netflix (Unofficial)
 Copyright (c) 2026 Pankaj
 SPDX-License-Identifier: GPL-3.0-only
 

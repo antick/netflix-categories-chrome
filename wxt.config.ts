@@ -12,7 +12,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   }),
   manifest: {
-    name: "Categories for Netflix — Unofficial",
+    name: "Categories for Netflix (Unofficial)",
     description:
       "Unofficial, open-source Chrome extension for browsing Netflix's hidden categories and secret genre codes.",
     permissions: ["storage"],
