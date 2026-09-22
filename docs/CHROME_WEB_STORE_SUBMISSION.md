@@ -54,7 +54,7 @@ Use the current production UI and synthetic preferences; do not expose personal 
 - Small promotional tile: **440×280**, required.
 - Optional marquee: **1400×560**.
 
-The existing files in `docs/screenshots/` are historical reference images, **not upload-ready**: popup/search/favorites are 880×1240, Options is 1440×2103, and the menu is 1600×980. They also show features disabled in this release. Recapture current screenshots at the required dimensions; do not stretch old images. A new small promotional tile is still needed. Do not include the old menu screenshot or advertise automatic empty detection.
+Ready-to-upload images are in [store-assets/](store-assets/README.md): four current 1280×800 screenshots, the 128×128 icon, and a 440×280 promotional tile. Upload them according to that folder's table. The existing files in `docs/screenshots/` are historical reference images with different dimensions and disabled features; do not use them for this listing or advertise automatic empty detection.
 
 Source: [Google's image requirements](https://developer.chrome.com/docs/webstore/images).
 

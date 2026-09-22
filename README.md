@@ -17,6 +17,22 @@ An independent, open-source Chrome extension for searching public Netflix genre 
 
 The store build uses only the `storage` permission. It does not read Netflix pages, cookies, credentials, viewing history, or account information. Opening a link visits Netflix normally and still requires whatever subscription and regional access Netflix ordinarily requires. This extension does not unlock restricted titles or bypass payment, ads, DRM, or region limits.
 
+## Screenshots
+
+### Browse categories
+
+Search by name or genre code, open category links, and keep favorites in the toolbar popup. Shown in dark theme with sample favorites.
+
+![Extension popup in dark theme showing category search, favorites, recent selections, hidden categories, and genre links](docs/store-assets/01-browse.png)
+
+### Settings
+
+Choose a theme, export or import settings, and clear or restore local category lists. Shown in light theme.
+
+![Extension settings in light theme showing appearance controls, settings export and import, and local data management](docs/store-assets/04-options.png)
+
+See also the [search screenshot](docs/store-assets/02-search.png) and [favorites screenshot](docs/store-assets/03-favorites.png).
+
 ## Install and develop
 
 Use Bun **1.4.2**, pinned in `package.json`. WXT's build tools also require Node.js 22 or newer.
