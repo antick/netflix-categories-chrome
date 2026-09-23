@@ -2,9 +2,9 @@
 
 An independent, open-source Chrome extension for searching public Netflix genre codes and keeping local category lists. Not affiliated with, endorsed by, or sponsored by Netflix.
 
-## Release status
+## Install
 
-**Not yet published in the Chrome Web Store.** See the [release review](docs/RELEASE_REVIEW.md) for remaining store preparation and the category-source review note, and the [submission guide](docs/CHROME_WEB_STORE_SUBMISSION.md) for publishing steps.
+[Add Categories for Netflix (Unofficial) to Chrome](https://chromewebstore.google.com/detail/categories-for-netflix-un/dhmkkdcngbedlfggdpdnoahebcdnmdlj). After installing, pin the extension to the toolbar for easy access.
 
 ## Features
 
@@ -33,7 +33,7 @@ Choose a theme, export or import settings, and clear or restore local category l
 
 See also the [search screenshot](docs/store-assets/02-search.png) and [favorites screenshot](docs/store-assets/03-favorites.png).
 
-## Install and develop
+## Develop locally
 
 Use Bun **1.4.2**, pinned in `package.json`. WXT's build tools also require Node.js 22 or newer.
 
@@ -44,7 +44,7 @@ bun install --frozen-lockfile
 bun run build
 ```
 
-Open `chrome://extensions`, enable Developer mode, select **Load unpacked**, and choose `.output/chrome-mv3`. Pin the extension to the toolbar. For development, `bun run dev` starts WXT's development browser.
+Open `chrome://extensions`, enable Developer mode, select **Load unpacked**, and choose `.output/chrome-mv3`. For development, `bun run dev` starts WXT's development browser.
 
 ```bash
 bun run validate:data
