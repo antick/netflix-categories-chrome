@@ -1,0 +1,15 @@
+{
+  "name": "@netflix-categories/data",
+  "description": "Bundled Netflix category names and genre codes shared by the extension and landing site.",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./netflix-categories.json": "./netflix-categories.json"
+  },
+  "scripts": {
+    "validate": "bun run scripts/validate-categories.ts"
+  },
+  "license": "GPL-3.0-only"
+}

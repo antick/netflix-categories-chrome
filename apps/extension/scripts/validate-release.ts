@@ -1,9 +1,23 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { PAGE_INTEGRATION_ENABLED } from "../lib/release";
 
-const output = join(import.meta.dir, "../.output/chrome-mv3");
+const extensionRoot = join(import.meta.dir, "..");
+const output = join(extensionRoot, ".output/chrome-mv3");
+
+// Workspaces may hoist dependencies to the repository root, so search upward.
+function findPackageJson(name: string): string {
+  let dir = extensionRoot;
+  while (true) {
+    const candidate = join(dir, "node_modules", name, "package.json");
+    if (existsSync(candidate)) return candidate;
+    const parent = dirname(dir);
+    if (parent === dir) throw new Error(`Cannot find installed ${name}`);
+    dir = parent;
+  }
+}
 const manifest = JSON.parse(
   await readFile(join(output, "manifest.json"), "utf8"),
 );
@@ -41,7 +55,7 @@ assert(
 const license = await readFile(join(output, "LICENSE.txt"), "utf8");
 assert.equal(
   license,
-  await readFile(join(import.meta.dir, "../LICENSE"), "utf8"),
+  await readFile(join(extensionRoot, "../../LICENSE"), "utf8"),
 );
 const notices = await readFile(join(output, "THIRD_PARTY_NOTICES.txt"), "utf8");
 for (const name of [
@@ -54,12 +68,7 @@ for (const name of [
   "wxt",
   "@wxt-dev/browser",
 ]) {
-  const pkg = JSON.parse(
-    await readFile(
-      join(import.meta.dir, "../node_modules", name, "package.json"),
-      "utf8",
-    ),
-  );
+  const pkg = JSON.parse(await readFile(findPackageJson(name), "utf8"));
   assert(
     notices.includes(`${name} ${pkg.version} (`),
     `Update license notices for ${name}`,

@@ -6,7 +6,9 @@ Thanks for helping improve Netflix Categories. This is an unofficial project and
 
 1. Install [Bun](https://bun.sh) matching `package.json` `packageManager`.
 2. `bun install`
-3. `bun run dev`
+3. `bun run dev` for the extension, or `bun run dev:landing` for the website
+
+The extension is in `apps/extension`, the website in `apps/landing`, and the shared dataset in `packages/categories`. Website changes don't need an extension version bump, but they only reach production with the next tagged release.
 
 Use Biome (`bun run check`) instead of ESLint/Prettier.
 

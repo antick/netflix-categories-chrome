@@ -1,0 +1,52 @@
+---
+import { Image } from "astro:assets";
+import options from "../assets/options.png";
+import favorites from "../assets/popup-favorites.png";
+import search from "../assets/popup-search.png";
+
+const shots = [
+  {
+    src: favorites,
+    caption: "Favorites keep your go-to genres one click away.",
+    alt: "The Favorites tab listing six starred genres, including Cyberpunk, Anime, and Thrillers, with their codes",
+  },
+  {
+    src: search,
+    caption: "Search by name or number, in light or dark.",
+    alt: "The popup in light theme with a search for cyberpunk returning the Cyberpunk genre, code 1964512",
+  },
+  {
+    src: options,
+    caption: "Back up, restore, or reset your lists in Options.",
+    alt: "The Options page with appearance, backup export and import, and controls to clear or reset local lists",
+  },
+];
+---
+<section class="border-t border-border/60 bg-card/40">
+  <div class="mx-auto max-w-6xl px-5 py-20">
+    <p class="font-mono text-xs font-bold tracking-[0.12em] text-primary">INSIDE THE EXTENSION</p>
+    <h2 class="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
+      Small enough for the toolbar. Fast enough to browse on a whim.
+    </h2>
+    <ul class="mt-10 grid items-start gap-6 md:grid-cols-3">
+      {
+        shots.map((shot) => (
+          <li>
+            <figure>
+              <div class="overflow-hidden rounded-xl border border-border shadow-xl shadow-black/30">
+                <Image
+                  src={shot.src}
+                  alt={shot.alt}
+                  widths={[440, 880].filter((width) => width <= shot.src.width * 2)}
+                  sizes="(min-width: 768px) 360px, 100vw"
+                  class="h-auto w-full"
+                />
+              </div>
+              <figcaption class="mt-3 text-sm text-muted-foreground">{shot.caption}</figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

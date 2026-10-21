@@ -1,6 +1,6 @@
 # Category data
 
-The extension ships a static dataset at `data/netflix-categories.json`. Category lists are **never fetched at runtime**.
+The extension ships a static dataset at `packages/categories/netflix-categories.json`. Category lists are **never fetched at runtime**. The website at netflix-categories.potion.sh renders its codes page from the same file at build time.
 
 ## What the data contains and the source question
 
@@ -44,7 +44,7 @@ Uncertain items: a few grouping parents (for example Featured Collections landin
 ## Update the dataset
 
 1. Research new or changed codes from public sources (prefer Tudum).
-2. Edit `data/netflix-categories.json`.
+2. Edit `packages/categories/netflix-categories.json`.
 3. Set `updatedAt` to today’s `YYYY-MM-DD`.
 4. Update this file if sources or methodology changed.
 5. Run:
@@ -59,4 +59,4 @@ bun run build
 
 Do not add remote dataset fetching.
 
-The historical parser accepts an explicit local input: `bun scripts/build-categories.ts <licensed-source-table.txt>`. It makes no network requests. Use it only with input you are authorized to redistribute; it overwrites the bundled dataset. The old temporary source dump is not part of this repository.
+The historical parser accepts an explicit local input: `bun packages/categories/scripts/build-categories.ts <licensed-source-table.txt>`. It makes no network requests. Use it only with input you are authorized to redistribute; it overwrites the bundled dataset. The old temporary source dump is not part of this repository.

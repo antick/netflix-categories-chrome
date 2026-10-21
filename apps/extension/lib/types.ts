@@ -1,15 +1,4 @@
-export interface Category {
-  id: string;
-  name: string;
-  code: string;
-  children?: Category[];
-}
-
-export interface CategoryDataset {
-  schemaVersion: number;
-  updatedAt: string;
-  categories: Category[];
-}
+export type { Category, CategoryDataset } from "@netflix-categories/data";
 
 export interface FlatCategory {
   id: string;

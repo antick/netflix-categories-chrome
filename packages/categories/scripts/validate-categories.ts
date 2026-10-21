@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Category, CategoryDataset } from "../lib/types";
+import type { Category, CategoryDataset } from "../index.ts";
 
 const CODE_PATTERN = /^\d{2,}$/;
 const ROOT = dirname(fileURLToPath(import.meta.url));
-const DATA_PATH = join(ROOT, "../data/netflix-categories.json");
+const DATA_PATH = join(ROOT, "../netflix-categories.json");
 
 function fail(message: string): never {
   console.error(`Category validation failed: ${message}`);

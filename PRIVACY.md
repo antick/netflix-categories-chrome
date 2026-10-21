@@ -26,4 +26,4 @@ Saved settings remain until you clear or reset them in Options, remove the exten
 
 ## Changes and contact
 
-Changes to data handling will be reflected here and disclosed in the extension and store listing when required. For questions, use the [project issue tracker](https://github.com/antick/netflix-categories-chrome/issues). Do not post private exports, credentials, or account screenshots. For vulnerabilities, follow [SECURITY.md](SECURITY.md).
+Changes to data handling will be reflected here and disclosed in the extension and store listing when required. For questions, use the [project issue tracker](https://github.com/antick/netflix-categories-chrome/issues). Do not post private exports, credentials, or account screenshots. For vulnerabilities, follow [SECURITY.md](https://github.com/antick/netflix-categories-chrome/blob/main/SECURITY.md).

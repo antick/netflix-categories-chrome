@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * One-shot parser for public Netflix category lists.
- * Reads The Streamable compiled table dump and emits data/netflix-categories.json
+ * Reads The Streamable compiled table dump and emits netflix-categories.json
  */
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -13,7 +13,7 @@ if (!SOURCE) {
     "Usage: bun scripts/build-categories.ts <licensed-source-table.txt>",
   );
 }
-const OUT = join(import.meta.dir, "../data/netflix-categories.json");
+const OUT = join(import.meta.dir, "../netflix-categories.json");
 
 type Category = {
   id: string;

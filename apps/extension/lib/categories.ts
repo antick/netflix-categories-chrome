@@ -1,7 +1,7 @@
-import dataset from "../data/netflix-categories.json";
+import { dataset } from "@netflix-categories/data";
 import type { Category, CategoryDataset, FlatCategory } from "./types";
 
-const data = dataset as CategoryDataset;
+const data: CategoryDataset = dataset;
 
 function flatten(
   categories: Category[],

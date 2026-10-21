@@ -6,7 +6,7 @@ Checked against Google's official guidance on 2026-09-22. No listing has been cr
 
 - Read the [category-source note](CATEGORY_DATA.md). The list contains public category names and numeric codes; this review has not established a licensing violation or a permission requirement for those facts. Keep source attribution and avoid copying protected article content.
 - Your personal commit email is normal Git metadata. Leave it unchanged if intentional; using GitHub's noreply address for future commits is an optional privacy choice, not a release requirement.
-- Publish the reviewed source, including GPLv3, `bun.lock`, notices, and build instructions. The source linked in `public/SOURCE.txt` must match each binary release. Tag/archive the exact release; do not link only to a changing default branch as the sole source for old releases.
+- Publish the reviewed source, including GPLv3, `bun.lock`, notices, and build instructions. The source linked in `apps/extension/public/SOURCE.txt` must match each binary release. Tag/archive the exact release; do not link only to a changing default branch as the sole source for old releases.
 - Enable GitHub private vulnerability reporting, dependency alerts, and secret scanning where available. Do not upload local `.git` contents, profiles, settings exports, or development artifacts to the store.
 - Review [RELEASE_REVIEW.md](RELEASE_REVIEW.md). This technical review is not legal clearance, and neither Google approval nor freedom from Netflix enforcement is guaranteed.
 
@@ -34,22 +34,22 @@ bun run typecheck
 bun run test
 bun run zip
 bun run validate:release
-unzip -l .output/netflix-categories-chrome-1.0.0-chrome.zip
+unzip -l apps/extension/.output/netflix-categories-chrome-1.0.0-chrome.zip
 ```
 
-The version in the ZIP filename follows `package.json`. `wxt zip` performs a production build. Upload the generated ZIP, **not** a ZIP of the repository and not a development build.
+The version in the ZIP filename follows `apps/extension/package.json`. Run these from the repository root; the website in `apps/landing` is not part of the ZIP. `wxt zip` performs a production build. Upload the generated ZIP, **not** a ZIP of the repository and not a development build.
 
 The ZIP must have `manifest.json` at its root, Manifest V3, `permissions: ["storage"]`, packaged scripts/styles/fonts, GPLv3, source information, and third-party notices. It must have no background/content script, host/optional/scripting/activeTab permission, development reload client, `.env`, key, profile, or source map. `validate:release` checks the output directory; inspect the corresponding ZIP too.
 
-Keep `PAGE_INTEGRATION_ENABLED = false` in `lib/release.ts`. Do not bypass the release check or silently re-enable the retained integration.
+Keep `PAGE_INTEGRATION_ENABLED = false` in `apps/extension/lib/release.ts`. Do not bypass the release check or silently re-enable the retained integration.
 
-Load `.output/chrome-mv3` at `chrome://extensions` in a fresh profile. Check search, current/new-tab links, favorites, hide/restore, recent, themes, export/import, and reset. Confirm there is no header integration switch, including after importing an older export with its flag set to true. Test on the Chrome versions you intend to support.
+Load `apps/extension/.output/chrome-mv3` at `chrome://extensions` in a fresh profile. Check search, current/new-tab links, favorites, hide/restore, recent, themes, export/import, and reset. Confirm there is no header integration switch, including after importing an older export with its flag set to true. Test on the Chrome versions you intend to support.
 
 ## 4. Prepare the listing images
 
 Use the current production UI and synthetic preferences; do not expose personal accounts, browsing tabs, emails, or watch history.
 
-- Package/store icon: `public/icons/icon-128.png` (128×128 PNG). The icon uses generic category/search artwork, not the Netflix N logo.
+- Package/store icon: `apps/extension/public/icons/icon-128.png` (128×128 PNG). The icon uses generic category/search artwork, not the Netflix N logo.
 - Screenshots: at least one, maximum five, **1280×800** preferred or **640×400**, full bleed with square corners.
 - Small promotional tile: **440×280**, required.
 - Optional marquee: **1400×560**.
@@ -61,10 +61,10 @@ Source: [Google's image requirements](https://developer.chrome.com/docs/webstore
 ## 5. Create the draft item
 
 1. In the dashboard, select **Add new item**.
-2. Upload `.output/netflix-categories-chrome-1.0.0-chrome.zip`.
+2. Upload `apps/extension/.output/netflix-categories-chrome-1.0.0-chrome.zip`.
 3. Check the Package tab's version and permissions. Stop if it shows site access or a content/background script.
 4. Fill the Store listing tab with accurate English copy, the closest available category, and current images. Use an entertainment-related category if offered; the dashboard's choices can change.
-5. Set the homepage to `https://github.com/antick/netflix-categories-chrome` and support to its `/issues` page.
+5. Set the homepage to `https://netflix-categories.potion.sh` once the website is live (until then, `https://github.com/antick/netflix-categories-chrome`) and support to the repository's `/issues` page. The privacy policy URL may also point at `https://netflix-categories.potion.sh/privacy`, which renders `PRIVACY.md`. Listing fields change without a new package upload.
 
 Source: [publish an extension](https://developer.chrome.com/docs/webstore/publish).
 
@@ -135,4 +135,6 @@ Source: [submission and deferred publishing](https://developer.chrome.com/docs/w
 
 ## 10. Future releases
 
-Increase `package.json`'s version, update the lockfile/notices as needed, repeat tests and package checks, publish matching GPLv3 source, and upload the new ZIP to the same item. Keep data disclosures and screenshots aligned with the shipped features. Treat enabling page integration as a new legal/privacy/permissions decision, not a routine toggle.
+Increase `apps/extension/package.json`'s version, update the lockfile/notices as needed, repeat tests and package checks, publish matching GPLv3 source, and upload the new ZIP to the same item. Keep data disclosures and screenshots aligned with the shipped features. Treat enabling page integration as a new legal/privacy/permissions decision, not a routine toggle.
+
+Publishing the GitHub Release for the new tag also deploys the website (`.github/workflows/vercel-production.yml`). The website and the extension share one tag sequence: a website-only change still ships with the next tagged release, or can be redeployed from the latest release by running that workflow by hand.

@@ -11,8 +11,12 @@
       "**",
       "!**/.wxt",
       "!**/.output",
+      "!**/.astro",
+      "!**/.turbo",
+      "!**/.vercel",
+      "!**/dist",
       "!**/node_modules",
-      "!**/data/netflix-categories.json"
+      "!**/netflix-categories.json"
     ]
   },
   "formatter": {
@@ -48,5 +52,18 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.astro"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off",
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    }
+  ]
 }

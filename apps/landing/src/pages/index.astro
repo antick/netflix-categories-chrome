@@ -1,0 +1,22 @@
+---
+import Features from "../components/Features.astro";
+import FindGenre from "../components/FindGenre";
+import GetIt from "../components/GetIt.astro";
+import Hero from "../components/Hero.astro";
+import Privacy from "../components/Privacy.astro";
+import Questions from "../components/Questions.astro";
+import Screens from "../components/Screens.astro";
+import Base from "../layouts/Base.astro";
+import { searchSuggestions } from "../lib/site";
+---
+<Base>
+  <Hero />
+  <section aria-label="Search genres" class="mx-auto max-w-3xl px-5 pb-20">
+    <FindGenre client:visible suggestions={searchSuggestions} />
+  </section>
+  <Features />
+  <Screens />
+  <Privacy />
+  <Questions />
+  <GetIt />
+</Base>

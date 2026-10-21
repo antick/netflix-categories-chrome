@@ -40,3 +40,9 @@ yarn.lock
 *.p12
 *.pfx
 *.crx
+
+# Monorepo and landing build output
+.turbo
+dist
+.astro
+.vercel

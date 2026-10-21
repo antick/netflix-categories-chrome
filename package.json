@@ -1,39 +1,30 @@
 {
-  "name": "netflix-categories-chrome",
-  "description": "Unofficial, open-source Chrome extension for browsing Netflix's hidden categories and secret genre codes.",
+  "name": "netflix-categories",
   "private": true,
-  "version": "1.0.0",
   "type": "module",
   "packageManager": "bun@1.4.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "wxt",
-    "build": "wxt build",
-    "zip": "wxt zip",
-    "typecheck": "tsc --noEmit",
+    "dev": "bun run --filter netflix-categories-chrome dev",
+    "dev:landing": "bun run --filter @netflix-categories/landing dev",
+    "build": "turbo run build",
+    "build:extension": "turbo run build --filter=netflix-categories-chrome",
+    "build:landing": "turbo run build --filter=@netflix-categories/landing",
+    "zip": "bun run --filter netflix-categories-chrome zip",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "format": "biome format --write .",
-    "test": "bun test",
-    "validate:data": "bun run scripts/validate-categories.ts",
-    "postinstall": "wxt prepare",
-    "validate:release": "bun run scripts/validate-release.ts"
-  },
-  "dependencies": {
-    "@fontsource-variable/figtree": "5.3.0",
-    "lucide-react": "1.47.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "validate:data": "bun run --filter @netflix-categories/data validate",
+    "validate:release": "bun run --filter netflix-categories-chrome validate:release"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
-    "@tailwindcss/vite": "4.3.3",
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0",
-    "@wxt-dev/module-react": "1.2.2",
-    "linkedom": "0.18.13",
-    "tailwindcss": "4.3.3",
-    "typescript": "7.0.2",
-    "wxt": "0.21.4"
+    "turbo": "2.11.3"
   },
   "license": "GPL-3.0-only"
 }

@@ -1,9 +1,20 @@
-name: CI
+name: CI extension
 
 on:
   push:
     branches: [main]
+    paths: &extension-paths
+      - "apps/extension/**"
+      - "packages/**"
+      - "package.json"
+      - "bun.lock"
+      - "bunfig.toml"
+      - "turbo.json"
+      - "biome.json"
+      - "LICENSE"
+      - ".github/workflows/ci-extension.yml"
   pull_request:
+    paths: *extension-paths
 
 permissions:
   contents: read
@@ -19,7 +30,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run validate:data
       - run: bun run check
-      - run: bun run typecheck
-      - run: bun run test
-      - run: bun run build
+      - run: bun run typecheck --filter=netflix-categories-chrome
+      - run: bun run test --filter=netflix-categories-chrome
+      - run: bun run build:extension
       - run: bun run validate:release
