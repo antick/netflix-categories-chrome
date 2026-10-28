@@ -1,12 +1,12 @@
 {
   "name": "netflix-categories",
   "private": true,
-  "type": "module",
-  "packageManager": "bun@1.4.2",
+  "license": "GPL-3.0-only",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
+  "type": "module",
   "scripts": {
     "dev": "bun run --filter netflix-categories-chrome dev",
     "dev:landing": "bun run --filter @netflix-categories/landing dev",
@@ -31,5 +31,5 @@
     "oxlint": "1.89.0",
     "turbo": "2.11.3"
   },
-  "license": "GPL-3.0-only"
+  "packageManager": "bun@1.4.2"
 }
