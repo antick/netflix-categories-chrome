@@ -1,0 +1,48 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "import",
+    "unicorn",
+    "promise",
+    "oxc",
+    "react",
+    "react-hooks",
+    "jsx-a11y"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "no-console": "off",
+    "react/react-in-jsx-scope": "off",
+    "import/no-unassigned-import": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/no-explicit-any": "error",
+    "typescript/consistent-type-imports": "error",
+    "eqeqeq": ["error", "smart"],
+    "no-await-in-loop": "off"
+  },
+  "ignorePatterns": [
+    "**/.wxt/**",
+    "**/.output/**",
+    "**/.astro/**",
+    "**/.turbo/**",
+    "**/.vercel/**",
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/netflix-categories.json"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.astro"],
+      "rules": {
+        "eslint/no-unused-vars": "off",
+        "typescript/no-unused-vars": "off",
+        "import/no-unassigned-import": "off"
+      }
+    }
+  ]
+}
