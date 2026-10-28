@@ -51,6 +51,14 @@ const visible = rows.slice(0, 6);
 <script>
   type Row = { name: string; code: string };
 
+  const tile = (digit: string) => {
+    const span = document.createElement("span");
+    span.className = "flip-tile is-flipping";
+    span.setAttribute("aria-hidden", "true");
+    span.textContent = digit;
+    return span;
+  };
+
   const board = document.querySelector<HTMLUListElement>("[data-board]");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -65,14 +73,6 @@ const visible = rows.slice(0, 6);
     // Spread updates across the board instead of rippling top to bottom.
     const order = [0, 3, 1, 4, 2, 5];
     let step = 0;
-
-    const tile = (digit: string) => {
-      const span = document.createElement("span");
-      span.className = "flip-tile is-flipping";
-      span.setAttribute("aria-hidden", "true");
-      span.textContent = digit;
-      return span;
-    };
 
     setInterval(() => {
       if (document.hidden) return;

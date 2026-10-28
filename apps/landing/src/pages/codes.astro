@@ -135,7 +135,7 @@ const updated = new Date(`${updatedAt}T00:00:00Z`).toLocaleDateString("en-US", {
   const groups = [...document.querySelectorAll<HTMLElement>("[data-group]")];
   const rows = [
     ...document.querySelectorAll<HTMLElement>("[data-row]"),
-  ].reverse();
+  ].toReversed();
   const total = rows.length + groups.length;
   const searchText = new Map<HTMLElement, string>();
   for (const element of [...rows, ...groups]) {
